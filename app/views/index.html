@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+GOV.UK prototype kit
+{% endblock %}
+
+{% block content %}
+
+<main id="content" role="main">
+
+	{% block phase_banner %}
+	{% include "includes/phase_banner_beta.html" %}
+	{% endblock %}
+
+	<div class="grid-row">
+		<div class="column-two-thirds">
+
+			<h1 class="heading-xlarge">
+				Late filing penalty prototype
+			</h1>
+
+			<p class="lede">
+				This service is to allow users to pay their late filing penalties online.
+			</p>
+
+			<h2 class="heading-large">Versions</h2>
+
+			<p>
+				<a href="prototype-version-1/start.html" class="button">Initial design</a>
+			</p>
+			<p>
+				<a href=" " class="button">Ammended design</a>
+			</p>
+
+		</div>
+	</div>
+</main>
+
+{% endblock %}

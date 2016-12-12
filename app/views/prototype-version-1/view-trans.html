@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+GOV.UK prototype kit
+{% endblock %}
+
+{% block content %}
+
+<main id="content" role="main">
+
+  {% block phase_banner %}
+  {% include "includes/phase_banner_beta.html" %}
+  {% endblock %}
+
+	<div class="breadcrumbs">
+		<a href="enter-details" class="link-back">Back</a>
+	</div>
+
+      <h1 class="heading-xlarge">
+        View transactions
+      </h1>
+
+			<div class="form-group">
+				<table>
+				  <thead>
+				    <tr>
+				      <th scope="col">Transaction date</th>
+				      <th scope="col">Ref no.</th>
+				      <th class="numeric" scope="col">Amount due</th>
+							<th scope="col">Description</th>
+							<th scope="col">Made up date</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr>
+				      <td>11 January 2016</td>
+				      <td>REF-123</td>
+				      <td class="numeric">£50.00</td>
+							<td>Services Rendered</td>
+							<td>11 March 2016</td>
+				    </tr>
+						<tr>
+				      <td>11 January 2016</td>
+				      <td>REF-124</td>
+				      <td class="numeric">£150.00</td>
+							<td>Services Rendered</td>
+							<td>11 March 2016</td>
+				    </tr>
+						<tr>
+				      <td>11 January 2016</td>
+				      <td>REF-127</td>
+				      <td class="numeric">£100.00</td>
+							<td>Services Rendered</td>
+							<td>11 March 2016</td>
+				    </tr>
+						<tr>
+							<td>12 January 2016</td>
+							<td>REF-128</td>
+							<td class="numeric">£100.00</td>
+							<td>Services Rendered</td>
+							<td>11 March 2016</td>
+						</tr>
+						<tr>
+							<td class="heading-small">Total outstanding to pay:</td>
+							<td class="heading-small">£500</td>
+							<td></td>
+							<td></td>
+							<td></td>
+						</tr>
+				  </tbody>
+				</table>
+			</div>
+
+			<p>
+				<a class="button" href="enter-amount" role="button">Enter amount</a>
+			</p>
+
+
+</main>
+
+{% endblock %}
