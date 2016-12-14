@@ -7,9 +7,9 @@ router.get( '/', function ( req, res ) {
 } );
 
 // Initial design
-require( './routes/initial-design.js' )( router );
+require( './routes/prototype-version-1.js' )( router );
 
 // Ammended design
-//require( './routes/ammended-design.js' )( router );
+require( './routes/prototype-version-2.js' )( router );
 
 module.exports = router;
