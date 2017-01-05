@@ -1,14 +1,8 @@
 module.exports = function ( router ) {
 
-
 	// Start page
 	router.get( '/prototype-version-2/start', function ( req, res ) {
 		res.render( 'prototype-version-2/start' );
-	} );
-
-	// sign in
-	router.get( '/prototype-version-2/sign-in', function ( req, res ) {
-		res.render( 'prototype-version-2/sign-in' );
 	} );
 
 	//enter details
@@ -16,17 +10,31 @@ module.exports = function ( router ) {
 		res.render( 'prototype-version-2/enter-details' );
 	} );
 
-	// view transaction history
-	router.get( '/prototype-version-2/view-trans', function ( req, res ) {
-		res.render( 'prototype-version-2/view-trans' );
+	//enter details
+	router.post( '/prototype-version-2/view-late-filing-penalty', function ( req, res ) {
+		var penalty = req.body.reference;
+		if ( penalty === "" ) {
+			res.redirect( '/prototype-version-2/enter-details' );
+		} else {
+			if ( penalty == "PEN1A/01234567" ) {
+				res.render( 'prototype-version-2/multiple-penalty' );
+			} else {
+				res.render( "prototype-version-2/single-penalty" );
+			}
+		}
 	} );
 
-	// enter amount you want to pay
+	// view transaction history
+	router.get( '/prototype-version-2/view-late-filing-penalty', function ( req, res ) {
+		res.render( 'prototype-version-2/view-late-filing-penalty' );
+	} );
+
+	// enter amount you want to pay from prototype version 1
 	router.get( '/prototype-version-2/enter-amount', function ( req, res ) {
 		res.render( 'prototype-version-2/enter-amount' );
 	} );
 
-	// review amount you want to pay
+	// review payment amount
 	router.get( '/prototype-version-2/review-amount', function ( req, res ) {
 		res.render( 'prototype-version-2/review-amount' );
 	} );
