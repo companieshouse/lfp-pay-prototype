@@ -20,55 +20,37 @@ GOV.UK prototype kit
     <div class="column-two-thirds">
 
       <h1 class="heading-xlarge">
-        Other charges
+        There are other charges due, would you like to review them?
       </h1>
 
-			<p class="lede">
-				Templeton Metal Works Ltd. has other charges to be paid.<br/>
-				You can choose to pay some of these now, or at another time.
+			<p class="warning-notice">
+				<div class="notice form-group">
+					<i class="icon icon-important"><span class="visually-hidden">Warning</span></i>
+					<strong class="bold-small">You don't have to pay these now, but if the charges are not paid we may take further action to recover the money.</strong>
+				</div>
 			</p>
+
+			<form>
+			  <div class="form-group">
+			    <fieldset class="inline">
+
+			      <label class="block-label selection-button-radio" for="radio-inline-1">
+			        <input id="radio-inline-1" type="radio" name="radio-inline-group" value="Yes">
+			        Yes
+			      </label>
+			      <label class="block-label selection-button-radio" for="radio-inline-2">
+			        <input id="radio-inline-2" type="radio" name="radio-inline-group" value="No">
+			        No
+			      </label>
+
+			    </fieldset>
+			  </div>
+			</form>
 
 			<p class="form-group">
-				<a class="button" href="review-amount" role="button">Pay just this penalty</a>
+				<a class="button" href="review-amount" role="button">Continue</a>
 			</p>
 
-			<p class="form-hint">or</p>
-
-			<div class="form-group">
-				<details><summary><span class="summary">Include other charges</span></summary>
-					<div class="panel panel-border-narrow">
-						<div class="form-group">
-						<h3 class="heading-medium">Other charges for this company</h3>
-						<form>
-						  <fieldset>
-
-						    <label class="block-label selection-button-checkbox" for="lfp-2">
-						      <input id="lfp-2" name="" type="checkbox" value="">
-									<span class="heading-small">Late filing penalty for accounts due to be filed on 31 January 2014</span><br/>
-										We recieved your accounts on 7 October 2014 within 12 months of the due date.<br/>
-										The penalty for this is <span class="heading-small">£375.00</span>
-						    </label>
-						    <label class="block-label selection-button-checkbox" for="court-fee">
-						      <input id="court-fee" name="" type="checkbox" value="">
-									<span class="heading-small">Court fees</span><br/>
-										We need content for why they owe us these<br/>
-										The cost of this is <span class="heading-small">£550.00</span>
-						    </label>
-
-						  </fieldset>
-						</form>
-
-						<p class="form-group">
-							<button class="button" href="review-amount" role="button" disabled="disabled">Pay for selected penalties</button>
-						</p>
-						</div>
-					</div>
-				</details>
-			</div>
-
-			<p>
-				Should you wish to pay by instalments, please email <a href=" c ">lfpinstalments@companieshouse.gov.uk</a>.
-			</p>
 
     </div>
 	</div>
