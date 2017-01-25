@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+GOV.UK prototype kit
+{% endblock %}
+
+{% block content %}
+
+<main id="content" role="main">
+
+  {% block phase_banner %}
+  {% include "includes/phase_banner_beta.html" %}
+  {% endblock %}
+
+	<!--<div class="breadcrumbs">
+		<a href="enter-amount" class="link-back">Back</a>
+	</div>-->
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      <h1 class="heading-xlarge">
+        Confirm payment
+      </h1>
+
+			<h2 class="heading-medium">Please confirm the details below before proceeding to card payment</h2>
+
+			<div>
+				<table>
+					<thead>
+						<tr>
+							<th colspan="2">Accounts for period ending on 30 April 2015</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Company name</td>
+							<td>TEMPLETON METAL WORKS LTD</td>
+						</tr>
+						<tr>
+							<td>Due date</td>
+							<td>31 January 2016</td>
+						</tr>
+						<tr>
+							<td>Date accounts were filed</td>
+							<td>3 March 2016</td>
+						</tr>
+						<tr>
+						 <td>Overdue by</td>
+							<td>1 month 3 days</td>
+						</tr>
+						<tr>
+						 <td>Penalty cost</td>
+							<td class="heading-small">£375</td>
+						</tr>
+						<tr>
+						 <td>Debt recovery costs</td>
+							<td class="heading-small">£152</td>
+						</tr>
+						<tr>
+							<td class="heading-small">Amount to be paid</td>
+							<td class="heading-small">£527</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+
+			<p>
+				<a class="button" href="gov-pay-1" role="button">Proceed to card payment</a>
+			</p>
+
+    </div>
+	</div>
+
+</main>
+
+{% endblock %}

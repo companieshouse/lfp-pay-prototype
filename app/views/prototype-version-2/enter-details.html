@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+GOV.UK prototype kit
+{% endblock %}
+
+{% block content %}
+
+<main id="content" role="main">
+
+  {% block phase_banner %}
+  {% include "includes/phase_banner_beta.html" %}
+  {% endblock %}
+
+	<!--<div class="breadcrumbs">
+		<a href="start" class="link-back">Back</a>
+	</div>-->
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      <h1 class="heading-xlarge">
+        Enter your penalty letter details
+      </h1>
+
+			<form class="form" method="POST" action="/prototype-version-2/view-late-filing-penalty">
+
+				<div class="form-group">
+					<label class="form-label-bold" for="account-number">
+						Company number
+						<span class="form-hint">
+							This is the 8 character reference on your penalty letter.
+						</span>
+					</label>
+					<input class="form-control" id="account-number" type="text">
+				</div>
+
+				<div class="form-group">
+					<label class="form-label-bold" for="invoice-number">
+						Penalty reference
+						<span class="form-hint">
+							This is the 13 character reference on your penalty letter.
+						</span>
+					</label>
+					<input class="form-control" id="invoice-number" type="text" name="reference" value="">
+				</div>
+
+				<div class="form-group">
+					<details><summary><span class="summary">Where can I find these details?</span></summary>
+						<div class="panel panel-border-narrow">
+							<p>
+								Late filing penalty letter
+							</p>
+							<img src="/public/images/PenWebImage280px.png" class="call-out-image"/>
+							<!--<p>
+								You can also <a href="http://beta.companieshouse.gov.uk">search for the company on the public register</a> to find the company number.
+							</p>-->
+						</div>
+					</details>
+				</div>
+				<input class="button" type="submit" value="Continue">
+			</form>
+
+
+    </div>
+	</div>
+
+</main>
+
+{% endblock %}

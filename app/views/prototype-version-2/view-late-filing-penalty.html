@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+GOV.UK prototype kit
+{% endblock %}
+
+{% block content %}
+
+<main id="content" role="main">
+
+  {% block phase_banner %}
+  {% include "includes/phase_banner_beta.html" %}
+  {% endblock %}
+
+	<!--<div class="breadcrumbs">
+		<a href="enter-details" class="link-back">Back</a>
+	</div>-->
+
+      <h1 class="heading-xlarge">
+        How this payment is calculated
+      </h1>
+			<p class="lede">
+				There are late filing penalties for <span class="heading-medium">Templeton Metal Works Ltd.</span>
+			</p>
+			<div class="grid-row">
+		    <div class="column-two-thirds">
+					<div>
+						<table>
+							<tbody>
+								<tr>
+									<td scope="col"><span class="heading-small">Accounts for period end 30 April 2015</span>
+										<span class="form-hint">Due to be filed on 31 January 2016<br/>
+										Recieved on 27 February 2016</span
+									</td>
+									<td class="lfp-sub-total">£150.00</td>
+								</tr>
+								<tr>
+									<td class="heading-small">Total outstanding to pay:</td>
+									<td class="heading-small">£150.00</td>
+								</tr>
+						  </tbody>
+						</table>
+					</div>
+
+					<p class="warning-notice">
+						<div class="notice form-group">
+							<i class="icon icon-important"><span class="visually-hidden">Warning</span></i>
+							<strong class="bold-small">If the payment is not made we may take further action to recover the money.</strong>
+						</div>
+					</p>
+			<p>
+				<a class="button" href="gov-pay-1" role="button">Proceed to payment</a>
+			</p>
+
+		</div>
+	</div>
+
+</main>
+
+{% endblock %}
