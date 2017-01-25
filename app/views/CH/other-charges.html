@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+GOV.UK prototype kit
+{% endblock %}
+
+{% block content %}
+
+<main id="content" role="main">
+
+  {% block phase_banner %}
+  {% include "includes/phase_banner_beta.html" %}
+  {% endblock %}
+
+	<!--<div class="breadcrumbs">
+		<a href="view-trans" class="link-back">Back</a>
+	</div>-->
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      <h1 class="heading-xlarge">
+        There are other charges due, would you like to review them?
+      </h1>
+
+			<p class="warning-notice">
+				<div class="notice form-group">
+					<i class="icon icon-important"><span class="visually-hidden">Warning</span></i>
+					<strong class="bold-small">You don't have to pay these now, but if the charges are not paid we may take further action to recover the money.</strong>
+				</div>
+			</p>
+
+			<form>
+			  <div class="form-group">
+			    <fieldset class="inline">
+
+			      <label class="block-label selection-button-radio" for="radio-inline-1">
+			        <input id="radio-inline-1" type="radio" name="radio-inline-group" value="Yes">
+			        Yes
+			      </label>
+			      <label class="block-label selection-button-radio" for="radio-inline-2">
+			        <input id="radio-inline-2" type="radio" name="radio-inline-group" value="No">
+			        No
+			      </label>
+
+			    </fieldset>
+			  </div>
+			</form>
+
+			<p class="form-group">
+				<a class="button" href="review-amount" role="button">Continue</a>
+			</p>
+
+
+    </div>
+	</div>
+
+</main>
+
+{% endblock %}

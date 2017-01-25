@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+GOV.UK prototype kit
+{% endblock %}
+
+{% block content %}
+
+<main id="content" role="main">
+
+  {% block phase_banner %}
+  {% include "includes/phase_banner_alpha.html" %}
+  {% endblock %}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+			<div class="gov-pay-img">
+				<img src="/public/images/gov-pay-confirm.png"/>
+			</div>
+
+			<p>
+				<a class="button" href="complete" role="button">Confirm payment</a>
+			</p>
+			<p>
+				<a href=" b ">Cancel payment</a>
+			</p>
+
+    </div>
+	</div>
+
+</main>
+
+{% endblock %}

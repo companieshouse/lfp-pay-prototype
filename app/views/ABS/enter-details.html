@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+GOV.UK prototype kit
+{% endblock %}
+
+{% block content %}
+
+<main id="content" role="main">
+
+  {% block phase_banner %}
+  {% include "includes/phase_banner_beta.html" %}
+  {% endblock %}
+
+	<!--<div class="breadcrumbs">
+		<a href="start" class="link-back">Back</a>
+	</div>-->
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+
+      <h1 class="heading-xlarge">
+        Identify payment
+      </h1>
+
+			<h2 class="heading-large">Payment details</h2>
+
+			<form>
+				<div class="form-group">
+					<label class="form-label" for="account-number">
+						Account number
+						<span class="form-hint">
+							It'll be on your last statement. For example, 123ABC345.
+						</span>
+					</label>
+					<input class="form-control" id="account-number" type="text">
+				</div>
+
+				<div class="form-group">
+					<label class="form-label" for="invoice-number">
+						Invoice number
+						<span class="form-hint">
+							It'll be on your last statement. For example, 123ABC345.
+						</span>
+					</label>
+					<input class="form-control" id="invoice-number" type="text">
+				</div>
+			</form>
+
+			<p>
+				<a class="button" href="view-trans" role="button">Continue</a>
+			</p>
+
+    </div>
+	</div>
+
+</main>
+
+{% endblock %}
