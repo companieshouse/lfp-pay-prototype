@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+  Pay your late filing penalty
+{% endblock %}
+
+{% block content %}
+
+<main id="content" role="main">
+
+  {% block phase_banner %}
+    {% include "includes/phase_banner_alpha.html" %}
+  {% endblock %}
+
+  <!--<div class="breadcrumbs">
+    <a href="enter-details" class="link-back">Back</a>
+  </div>-->
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <p>
+        <a href="" class="link-back">Back</a>
+      </p>
+      <h1 class="heading-xlarge">
+        Additional costs incurred for penalty {{ scenario.penalties[0].reference }}
+      </h1>
+      <p class="lede">
+        The table below shows all additional costs incurred by the delayed payment of this penalty.
+      </p>
+      {% if scenario.penalties[0].fees !== null %}
+      <table>
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Date</th>
+            <th>Cost incurred</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if scenario.penalties[0].fees.debtRecovery %}
+            {% for item in scenario.penalties[0].fees.debtRecovery %}
+              <tr>
+                <td>
+                  {{ item.name }}
+                </td>
+                <td>
+                  {{ item.date }}
+                </td>
+                <td>£{{ item.value }}</td>
+              </tr>
+            {% endfor %}
+          {% endif %}
+          {% if scenario.penalties[0].fees.solicitor %}
+            {% for item in scenario.penalties[0].fees.solicitor %}
+              <tr>
+                <td>
+                  {{ item.name }}
+                </td>
+                <td>
+                  {{ item.date }}
+                </td>
+                <td>£{{ item.value }}</td>
+              </tr>
+            {% endfor %}
+          {% endif %}
+          {% if scenario.penalties[0].fees.court %}
+            {% for item in scenario.penalties[0].fees.court %}
+              <tr>
+                <td>
+                  {{ item.name }}
+                </td>
+                <td>
+                  {{ item.date }}
+                </td>
+                <td>£{{ item.value }}</td>
+              </tr>
+            {% endfor %}
+          {% endif %}
+        </tbody>
+       </table>
+      {% endif %}
+      <p class="bold-medium">
+        Total costs incurred: £{{ scenario.penalties[0].totalFees }}
+      </p>
+      <p>
+        <a class="button" href="view-penalty" role="button">Return to penalty details</a>
+      </p>
+    </div>
+  </div>
+</main>
+
+{% endblock %}

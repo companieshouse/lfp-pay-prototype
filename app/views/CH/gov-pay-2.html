@@ -9,7 +9,7 @@ GOV.UK prototype kit
 <main id="content" role="main">
 
   {% block phase_banner %}
-  {% include "includes/phase_banner_beta.html" %}
+  {% include "includes/phase_banner_alpha.html" %}
   {% endblock %}
 
 	<div class="grid-row review-details">
@@ -20,31 +20,39 @@ GOV.UK prototype kit
 			    <tbody>
 			      <tr>
 			        <td class="gov-pay-table-td">Card number:</td>
-			        <td class="table-info gov-pay-table-td">************7470</td>
+			        <td class="table-info gov-pay-table-td">**** **** **** {{ payment.cardNumber | reverse | truncate(4, false, '')}}</td>
 			      </tr>
 			      <tr>
 			       <td class="gov-pay-table-td">Expiry date:</td>
-			        <td class="table-info gov-pay-table-td">11/19</td>
+			        <td class="table-info gov-pay-table-td">{{ payment.expMonth }}/{{ payment.expYear }}</td>
 			      </tr>
 			      <tr>
 			        <td class="gov-pay-table-td">Name on card:</td>
-			        <td class="table-info gov-pay-table-td">John Smith</td>
+			        <td class="table-info gov-pay-table-td">{{ payment.fullName }}</td>
 			      </tr>
 			      <tr>
 			        <td class="gov-pay-table-td">Billing address:</td>
-			        <td class="table-info gov-pay-table-td">10 Main Street, London, N8 9JH</td>
+			        <td class="table-info gov-pay-table-td">
+			          {{ payment.buildingStreet }}<br />
+                {{ payment.buildingAndStreet }}<br />
+                {{ payment.townOrCity }}<br />
+                {{ payment.postCode }}
+			        </td>
 			      </tr>
 			       <tr>
 			        <td class="gov-pay-table-td">Email address:</td>
-			        <td class="table-info gov-pay-table-td">johnsmith@gmail.com</td>
+			        <td class="table-info gov-pay-table-td">{{ payment.emailAddress }}</td>
 			      </tr>
 			      <tr>
 			        <td class="gov-pay-table-td">Payment of:</td>
-			        <td class="table-info gov-pay-table-td">Late filing penalty</td>
+			        <td class="table-info gov-pay-table-td">
+                Late filing penalty &ndash; {{ scenario.entryRef }}<br />
+                {{ scenario.company.name }} ({{ scenario.company.number }})<br />
+              </td>
 			      </tr>
 			      <tr>
 			        <td class="gov-pay-table-td">Amount to pay:</td>
-			        <td class="table-info gov-pay-table-td">£527</td>
+			        <td class="table-info gov-pay-table-td">£{{ scenario.penalties[0].totalFees + scenario.penalties[0].value }}</td>
 			      </tr>
 			    </tbody>
 	  		</table>

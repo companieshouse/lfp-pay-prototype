@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+  Pay your late filing penalty
+{% endblock %}
+
+{% block content %}
+
+<main id="content" role="main">
+
+  {% block phase_banner %}
+    {% include "includes/phase_banner_beta.html" %}
+  {% endblock %}
+
+  <!--<div class="breadcrumbs">
+    <a href="enter-details" class="link-back">Back</a>
+  </div>-->
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <h1 class="heading-xlarge">
+        Penalty details
+      </h1>
+      <p class="lede">
+        <span class="form-hint">TEMPLETON METAL WORK LTD &ndash; PEN1A/01234567</span>
+      </p>
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th colspan="2">Accounts for period ending on 30 April 2015</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Company name</th>
+              <td>TEMPLETON METAL WORKS LTD</td>
+            </tr>
+            <tr>
+              <th>Due date</th>
+              <td>31 January 2016</td>
+            </tr>
+            <tr>
+              <th>Date accounts were filed</th>
+              <td>
+                3 March 2016<br />
+                (1 month and 3 days overdue)
+              </td>
+            </tr>
+            <tr>
+              <th>Penalty band</th>
+              <td>1 to 3 months overdue</td>
+            </tr>
+            <tr>
+              <th>Penalty amount</th>
+              <td class="">£375</td>
+            </tr>
+            <tr>
+              <th>Debt recovery costs</th>
+              <td class="">£152</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="bold-medium">
+        Amount outstanding: £527.00
+      </p>
+      <p>
+        <a class="button" href="review-amount" role="button">Proceed to payment</a>
+      </p>
+    </div>
+  </div>
+</main>
+
+{% endblock %}
