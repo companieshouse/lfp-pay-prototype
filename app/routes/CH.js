@@ -15,17 +15,41 @@ module.exports = function (router) {
     var penalty = req.body.reference
     var companyno = req.body.companyno
     var penaltyErr = {}
+    var companyErr = {}
+    var errorFlag = false
     var scenario = {}
     var i = 0
 
+    // VALIDATE USER INPUTS
+    if (companyno.length < 8) {
+      companyErr.type = 'invalid'
+      companyErr.msg = 'You must enter your full eight character company number'
+      companyErr.flag = true
+      errorFlag = true
+    }
+    if (penalty !== 'PEN1A/12345678' && penalty !== 'PEN2B/12345678' && penalty !== 'PEN2A/12345678') {
+      penaltyErr.type = 'invalid'
+      penaltyErr.msg = 'Enter your penalty reference exactly as shown on your penalty letter'
+      penaltyErr.flag = true
+      errorFlag = true
+    }
     if (penalty === '') {
       penaltyErr.type = 'blank'
-      penaltyErr.msg = 'You must enter a penalty reference.'
+      penaltyErr.msg = 'You must enter a penalty reference'
+      penaltyErr.flag = true
+      errorFlag = true
+    }
+
+    // CHECK ERROR FLAG
+    if (errorFlag === true) {
       res.render('CH/enter-details', {
-        penaltyErr: penaltyErr
+        penaltyErr: penaltyErr,
+        companyErr: companyErr,
+        penalty: penalty,
+        companyno: companyno
       })
     } else {
-      if (penalty === 'PEN2A/1234567') {
+      if (penalty === 'PEN2A/12345678') {
         scenario.entryRef = penalty
         scenario.company = {
           name: 'LAKE AVIATION LIMITED',
@@ -33,7 +57,7 @@ module.exports = function (router) {
         }
         scenario.penalties = [
           {
-            reference: 'PEN2A/1234567',
+            reference: 'PEN2A/12345678',
             period: '30 April 2015',
             due: '1 January 2016',
             filed: '15 January 2016',
@@ -69,7 +93,7 @@ module.exports = function (router) {
 
         req.session.scenario = scenario
         res.redirect('/CH/view-penalty')
-      } else if (penalty === 'PEN2B/1234567') {
+      } else if (penalty === 'PEN2B/12345678') {
         scenario.entryRef = penalty
         scenario.company = {
           name: 'XYZ ARCHITECTS LIMITED',
@@ -77,7 +101,7 @@ module.exports = function (router) {
         }
         scenario.penalties = [
           {
-            reference: 'PEN2B/1234567',
+            reference: 'PEN2B/12345678',
             period: '30 April 2015',
             due: '1 January 2016',
             filed: '15 January 2016',
@@ -139,7 +163,7 @@ module.exports = function (router) {
 
         req.session.scenario = scenario
         res.redirect('/CH/view-penalty')
-      } else if (penalty === 'PEN1A/1234567') {
+      } else if (penalty === 'PEN1A/12345678') {
         scenario.entryRef = penalty
         scenario.company = {
           name: 'TEST METHODS LIMITED',
@@ -147,7 +171,7 @@ module.exports = function (router) {
         }
         scenario.penalties = [
           {
-            reference: 'PEN1A/1234567',
+            reference: 'PEN1A/12345678',
             period: '30 April 2015',
             due: '1 January 2016',
             filed: '15 January 2016',
@@ -159,12 +183,6 @@ module.exports = function (router) {
         ]
         req.session.scenario = scenario
         res.redirect('/CH/view-penalty')
-      } else {
-        penaltyErr.type = 'invalid'
-        penaltyErr.msg = 'Enter your penalty reference exactly as shown on your penalty letter'
-        res.render('CH/enter-details', {
-          penaltyErr: penaltyErr
-        })
       }
     }
   })
