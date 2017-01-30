@@ -200,12 +200,12 @@ module.exports = function (router) {
     }
   })
 
-  // View additional costs incurred on a penalty
-  router.get('/CH/view-costs', function (req, res) {
+  // View additional fees incurred on a penalty
+  router.get('/CH/view-fees', function (req, res) {
     var scenario = req.session.scenario
 
     if (scenario != null) {
-      res.render('CH/view-costs', {
+      res.render('CH/view-fees', {
         scenario: scenario
       })
     } else {
