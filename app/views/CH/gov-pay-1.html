@@ -139,7 +139,7 @@
                 Building name and/or number and street
                 {% if errors.buildingStreet %}
                   <span class="error-message">
-                    {{ errors.buildingAndStreet.msg }}
+                    {{ errors.buildingStreet.msg }}
                   </span>
                 {% endif %}
               </label>
@@ -174,7 +174,7 @@
                 <span class="form-hint">We'll send your payment confirmation here</span>
                 {% if errors.emailAddress %}
                   <span class="error-message">
-                    {{ errors.postCode.msg }}
+                    {{ errors.emailAddress.msg }}
                   </span>
                 {% endif %}
               </label>

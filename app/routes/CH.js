@@ -306,15 +306,6 @@ module.exports = function (router) {
       errorFlag = true
     }
 
-    if (payment.townOrCity === '') {
-      errors.townOrCity = {
-        type: 'blank',
-        msg: 'A town or city is required',
-        ref: 'town-or-city'
-      }
-      errorFlag = true
-    }
-
     if (payment.postCode === '') {
       errors.postCode = {
         type: 'blank',

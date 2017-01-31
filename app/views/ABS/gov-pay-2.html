@@ -15,55 +15,57 @@ GOV.UK prototype kit
 	<div class="grid-row review-details">
 		  <h1 class="heading-large">Confirm your payment</h1>
 		  <div class="check-details">
-
 		  	<table>
 			    <tbody>
 			      <tr>
-			        <td>Card number:</td>
-			        <td class="table-info">************7470</td>
+			        <td class="gov-pay-table-td">Card number:</td>
+			        <td class="table-info gov-pay-table-td">**** **** **** {{ payment.cardNumber | reverse | truncate(4, false, '')}}</td>
 			      </tr>
 			      <tr>
-			       <td>Expiry date:</td>
-			        <td class="table-info">11/19</td>
+			       <td class="gov-pay-table-td">Expiry date:</td>
+			        <td class="table-info gov-pay-table-td">{{ payment.expMonth }}/{{ payment.expYear }}</td>
 			      </tr>
 			      <tr>
-			        <td>Name on card:</td>
-			        <td class="table-info">John Smith</td>
+			        <td class="gov-pay-table-td">Name on card:</td>
+			        <td class="table-info gov-pay-table-td">{{ payment.fullName }}</td>
 			      </tr>
 			      <tr>
-			        <td>Billing address:</td>
-			        <td class="table-info">10 Main Street, London, N8 9JH</td>
+			        <td class="gov-pay-table-td">Billing address:</td>
+			        <td class="table-info gov-pay-table-td">
+			          {{ payment.buildingStreet }}<br />
+                {{ payment.buildingAndStreet }}<br />
+                {{ payment.townOrCity }}<br />
+                {{ payment.postCode }}
+			        </td>
 			      </tr>
 			       <tr>
-			        <td>Email address:</td>
-			        <td class="table-info">johnsmith@gmail.com</td>
+			        <td class="gov-pay-table-td">Email address:</td>
+			        <td class="table-info gov-pay-table-td">{{ payment.emailAddress }}</td>
 			      </tr>
 			      <tr>
-			        <td>Payment of:</td>
-			        <td class="table-info">Late filing penalty</td>
+			        <td class="gov-pay-table-td">Payment of:</td>
+			        <td class="table-info gov-pay-table-td">
+                Late filing penalty
+              </td>
 			      </tr>
 			      <tr>
-			        <td>Amount to pay:</td>
-			        <td class="table-info">£527.00</td>
+			        <td class="gov-pay-table-td">Amount to pay:</td>
+			        <td class="table-info gov-pay-table-td">£{{ paymentAmount }}</td>
 			      </tr>
 			    </tbody>
 	  		</table>
 			</div>
 	</div>
-
-		<div class="grid-row">
-			<div class="column-two-thirds">
-				<div class="form-group">
-						<a class="button" href="complete" role="button">Confirm payment</a>
-			 		</div>
-			 		<div class="back">
-					<a href="#">Cancel payment</a>
-				</div>
-			 </div>
-		 </div>
-
-
-
+  <div class="grid-row">
+  	<div class="column-two-thirds">
+  		<div class="form-group">
+  				<a class="button" href="complete" role="button">Confirm payment</a>
+  	 		</div>
+  	 		<div class="back">
+  			<a href="#">Cancel payment</a>
+  		</div>
+  	 </div>
+   </div>
 </main>
 
 {% endblock %}
