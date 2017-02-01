@@ -352,6 +352,27 @@ module.exports = function (router) {
 
     if (scenario != null) {
       payment = req.session.payment
+
+      // Send confirmation email
+      var postmark = require('postmark')
+      var client = new postmark.Client(process.env.POSTMARK_API_KEY)
+
+      client.sendEmailWithTemplate({
+        'From': 'owilliams@companieshouse.gov.uk',
+        'To': payment.emailAddress,
+        'TemplateId': 1273881,
+        'TemplateModel': {
+          'scenario': scenario,
+          'payment': payment
+        }
+      }, function (error, success) {
+        if (error) {
+          console.error('Unable to send via postmark: ' + error.message)
+          return
+        }
+        console.info('Sent to postmark for delivery')
+      })
+
       res.render('hybrid/complete', {
         scenario: scenario,
         payment: payment
