@@ -1,15 +1,16 @@
-var express = require( 'express' )
+var express = require('express')
 var router = express.Router()
 
 // Route index page
-router.get( '/', function ( req, res ) {
-	res.render( 'index' )
-} );
+router.get('/', function (req, res) {
+  req.session.destroy()
+  res.render('index')
+})
 
 // Initial design
-require( './routes/prototype-version-1.js' )( router );
+require('./routes/ABS.js')(router)
 
 // Ammended design
-require( './routes/prototype-version-2.js' )( router );
+require('./routes/CH.js')(router)
 
-module.exports = router;
+module.exports = router
