@@ -363,7 +363,8 @@ module.exports = function (router) {
         'TemplateId': 1273881,
         'TemplateModel': {
           'scenario': scenario,
-          'payment': payment
+          'payment': payment,
+          'totalPaid': (scenario.penalties[0].value + scenario.penalties[0].totalFees)
         }
       }, function (error, success) {
         if (error) {
