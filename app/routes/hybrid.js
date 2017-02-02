@@ -349,9 +349,11 @@ module.exports = function (router) {
   router.get('/hybrid/complete', function (req, res) {
     var scenario = req.session.scenario
     var payment = ''
+    var totalPaid = 0
 
     if (scenario != null) {
       payment = req.session.payment
+      totalPaid = (scenario.penalties[0].value + scenario.penalties[0].totalFees)
 
       // Send confirmation email
       var postmark = require('postmark')
@@ -364,14 +366,13 @@ module.exports = function (router) {
         'TemplateModel': {
           'scenario': scenario,
           'payment': payment,
-          'totalPaid': (scenario.penalties[0].value + scenario.penalties[0].totalFees)
+          'totalPaid': totalPaid
         }
       }, function (error, success) {
         if (error) {
           console.error('Unable to send via postmark: ' + error.message)
           return
         }
-        console.info('Sent to postmark for delivery')
       })
 
       res.render('hybrid/complete', {
