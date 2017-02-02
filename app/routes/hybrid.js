@@ -362,7 +362,7 @@ module.exports = function (router) {
       client.sendEmailWithTemplate({
         'From': 'owilliams@companieshouse.gov.uk',
         'To': payment.emailAddress,
-        'TemplateId': 1273881,
+        'TemplateId': process.env.ETID_CONFIRMATION,
         'TemplateModel': {
           'scenario': scenario,
           'payment': payment,
