@@ -13,4 +13,7 @@ require('./routes/ABS.js')(router)
 // Ammended design
 require('./routes/CH.js')(router)
 
+// Ammended design
+require('./routes/hybrid.js')(router)
+
 module.exports = router

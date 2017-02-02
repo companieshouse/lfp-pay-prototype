@@ -24,32 +24,64 @@ GOV.UK prototype kit
       </h1>
 
 			<h2 class="heading-large">Payment details</h2>
-
-			<form>
-				<div class="form-group">
+      {% if penaltyErr or companyErr %}
+      <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+        <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+          We couldn't find your penalty details
+        </h1>
+        <p>
+          You must provide a company number and penalty reference to pay a late filing penalty.
+        </p>
+        <ul class="error-summary-list">
+          {% if companyErr.type %}
+            <li>
+              <a href="#company-number">{{ companyErr.msg }}</a>
+            </li>
+          {% endif %}
+          {% if penaltyErr.type %}
+            <li>
+              <a href="#penalty-ref">{{ penaltyErr.msg }}</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+      {% endif %}
+			<form class="form" method="POST" action="enter-details">
+				<div class="form-group {% if companyErr.type %} error{% endif %}">
 					<label class="form-label" for="account-number">
 						Account number
+            {% if companyErr.type %}
+              <span class="error-message">
+                {{ companyErr.msg }}
+              </span>
+            {% endif %}
 						<span class="form-hint">
 							It'll be on your last statement. For example, 123ABC345.
 						</span>
 					</label>
-					<input class="form-control" id="account-number" type="text">
+					<input class="form-control" id="account-number" name="companyno" type="text" value="{{ companyno }}">
 				</div>
 
-				<div class="form-group">
+				<div class="form-group {% if penaltyErr.type %} error{% endif %}">
 					<label class="form-label" for="invoice-number">
 						Invoice number
+            {% if penaltyErr.type %}
+              <span class="error-message">
+                {{ penaltyErr.msg }}
+              </span>
+            {% endif %}
 						<span class="form-hint">
 							It'll be on your last statement. For example, 123ABC345.
 						</span>
 					</label>
-					<input class="form-control" id="invoice-number" type="text">
+					<input class="form-control" id="invoice-number" name="reference" type="text" value="{{ penalty }}">
 				</div>
-			</form>
 
-			<p>
-				<a class="button" href="view-trans" role="button">Continue</a>
-			</p>
+			<div class="form-group">
+			  <input class="button" type="submit" value="Continue">
+			</div>
+
+      </form>
 
     </div>
 	</div>
