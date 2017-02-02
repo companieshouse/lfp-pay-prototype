@@ -30,12 +30,14 @@ GOV.UK prototype kit
 				  <tbody>
 				    <tr>
 				      <td>Amount:</td>
-				      <td>£527.00</td>
+				      <td>£{{ paymentAmount }}</td>
 				    </tr>
+            {% if mud %}
 				    <tr>
 				      <td>Made Up Date:</td>
-				      <td>30 April 2015</td>
+				      <td>{{ mud.day }} {{ mud.month }} {{ mud.year }}</td>
 				    </tr>
+            {% endif %}
 				  </tbody>
 				</table>
 			</div>

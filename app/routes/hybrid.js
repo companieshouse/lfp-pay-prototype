@@ -1,17 +1,17 @@
 module.exports = function (router) {
   // Start page
-  router.get('/CH/start', function (req, res) {
+  router.get('/hybrid/start', function (req, res) {
     req.session.destroy()
-    res.render('CH/start')
+    res.render('hybrid/start')
   })
 
   // Enter details
-  router.get('/CH/enter-details', function (req, res) {
-    res.render('CH/enter-details')
+  router.get('/hybrid/enter-details', function (req, res) {
+    res.render('hybrid/enter-details')
   })
 
   // Enter details
-  router.post('/CH/enter-details', function (req, res) {
+  router.post('/hybrid/enter-details', function (req, res) {
     var penalty = req.body.reference
     var companyno = req.body.companyno
     var penaltyErr = {}
@@ -40,9 +40,9 @@ module.exports = function (router) {
       errorFlag = true
     }
 
-    // CHECK ERROR FLAG
+    // hybridECK ERROR FLAG
     if (errorFlag === true) {
-      res.render('CH/enter-details', {
+      res.render('hybrid/enter-details', {
         penaltyErr: penaltyErr,
         companyErr: companyErr,
         penalty: penalty,
@@ -92,7 +92,7 @@ module.exports = function (router) {
         }
 
         req.session.scenario = scenario
-        res.redirect('/CH/view-penalty')
+        res.redirect('/hybrid/view-penalty')
       } else if (penalty === 'PEN2B/12345678') {
         scenario.entryRef = penalty
         scenario.company = {
@@ -130,16 +130,21 @@ module.exports = function (router) {
               */
               solicitor: [
                 {
-                  name: 'Solicitor letter',
+                  name: 'Solicitor fee',
                   date: '9 April 2016',
                   value: 50.00
                 }
               ],
               court: [
                 {
-                  name: 'County Court Judgement',
+                  name: 'Court fee',
                   date: '23 April 2016',
-                  value: 47.00
+                  value: 25.00
+                },
+                {
+                  name: 'Hearing fee',
+                  date: '23 April 2016',
+                  value: 22.00
                 }
               ]
             },
@@ -162,7 +167,7 @@ module.exports = function (router) {
         }
 
         req.session.scenario = scenario
-        res.redirect('/CH/view-penalty')
+        res.redirect('/hybrid/view-penalty')
       } else if (penalty === 'PEN1A/12345678') {
         scenario.entryRef = penalty
         scenario.company = {
@@ -182,52 +187,39 @@ module.exports = function (router) {
           }
         ]
         req.session.scenario = scenario
-        res.redirect('/CH/view-penalty')
+        res.redirect('/hybrid/view-penalty')
       }
     }
   })
 
   // View details of a single penalty
-  router.get('/CH/view-penalty', function (req, res) {
+  router.get('/hybrid/view-penalty', function (req, res) {
     var scenario = req.session.scenario
 
     if (scenario != null) {
-      res.render('CH/view-penalty', {
+      res.render('hybrid/view-penalty', {
         scenario: scenario
       })
     } else {
-      res.redirect('/CH/enter-details')
-    }
-  })
-
-  // View additional fees incurred on a penalty
-  router.get('/CH/view-fees', function (req, res) {
-    var scenario = req.session.scenario
-
-    if (scenario != null) {
-      res.render('CH/view-fees', {
-        scenario: scenario
-      })
-    } else {
-      res.redirect('/CH/enter-details')
+      res.redirect('/hybrid/enter-details')
     }
   })
 
   // gov uk pay page
-  router.get('/CH/gov-pay-1', function (req, res) {
+  router.get('/hybrid/gov-pay-1', function (req, res) {
     var scenario = req.session.scenario
 
     if (scenario != null) {
-      res.render('CH/gov-pay-1', {
+      res.render('hybrid/gov-pay-1', {
         scenario: scenario
       })
     } else {
-      res.redirect('/CH/enter-details')
+      res.redirect('/hybrid/enter-details')
     }
   })
 
   // gov uk pay page
-  router.post('/CH/gov-pay-1', function (req, res) {
+  router.post('/hybrid/gov-pay-1', function (req, res) {
     var scenario = req.session.scenario
     var payment = {}
     var errors = {}
@@ -324,9 +316,9 @@ module.exports = function (router) {
       errorFlag = true
     }
 
-    // CHECK ERROR FLAG
+    // hybridECK ERROR FLAG
     if (errorFlag === true) {
-      res.render('CH/gov-pay-1', {
+      res.render('hybrid/gov-pay-1', {
         errors: errors,
         scenario: scenario,
         payment: payment
@@ -338,34 +330,57 @@ module.exports = function (router) {
   })
 
   // gov uk pay page
-  router.get('/CH/gov-pay-2', function (req, res) {
+  router.get('/hybrid/gov-pay-2', function (req, res) {
     var scenario = req.session.scenario
     var payment = ''
 
     if (scenario != null) {
       payment = req.session.payment
-      res.render('CH/gov-pay-2', {
+      res.render('hybrid/gov-pay-2', {
         scenario: scenario,
         payment: payment
       })
     } else {
-      res.redirect('/CH/enter-details')
+      res.redirect('/hybrid/enter-details')
     }
   })
 
   // process complete
-  router.get('/CH/complete', function (req, res) {
+  router.get('/hybrid/complete', function (req, res) {
     var scenario = req.session.scenario
     var payment = ''
+    var totalPaid = 0
 
     if (scenario != null) {
       payment = req.session.payment
-      res.render('CH/complete', {
+      totalPaid = (scenario.penalties[0].value + scenario.penalties[0].totalFees)
+
+      // Send confirmation email
+      var postmark = require('postmark')
+      var client = new postmark.Client(process.env.POSTMARK_API_KEY)
+
+      client.sendEmailWithTemplate({
+        'From': 'owilliams@companieshouse.gov.uk',
+        'To': payment.emailAddress,
+        'TemplateId': 1273881,
+        'TemplateModel': {
+          'scenario': scenario,
+          'payment': payment,
+          'totalPaid': totalPaid
+        }
+      }, function (error, success) {
+        if (error) {
+          console.error('Unable to send via postmark: ' + error.message)
+          return
+        }
+      })
+
+      res.render('hybrid/complete', {
         scenario: scenario,
         payment: payment
       })
     } else {
-      res.redirect('/CH/enter-details')
+      res.redirect('/hybrid/enter-details')
     }
   })
 }
