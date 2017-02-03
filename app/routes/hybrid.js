@@ -356,24 +356,29 @@ module.exports = function (router) {
       totalPaid = (scenario.penalties[0].value + scenario.penalties[0].totalFees)
 
       // Send confirmation email
-      var postmark = require('postmark')
-      var client = new postmark.Client(process.env.POSTMARK_API_KEY)
 
-      client.sendEmailWithTemplate({
-        'From': 'owilliams@companieshouse.gov.uk',
-        'To': payment.emailAddress,
-        'TemplateId': process.env.ETID_CONFIRMATION,
-        'TemplateModel': {
-          'scenario': scenario,
-          'payment': payment,
-          'totalPaid': totalPaid
-        }
-      }, function (error, success) {
-        if (error) {
-          console.error('Unable to send via postmark: ' + error.message)
-          return
-        }
-      })
+      if (process.env.POSTMARK_API_KEY) {
+        var postmark = require('postmark')
+        var client = new postmark.Client(process.env.POSTMARK_API_KEY)
+
+        client.sendEmailWithTemplate({
+          'From': 'owilliams@companieshouse.gov.uk',
+          'To': payment.emailAddress,
+          'TemplateId': process.env.ETID_CONFIRMATION,
+          'TemplateModel': {
+            'scenario': scenario,
+            'payment': payment,
+            'totalPaid': totalPaid
+          }
+        }, function (error, success) {
+          if (error) {
+            console.error('Unable to send via postmark: ' + error.message)
+            return
+          }
+        })
+      } else {
+        console.log('No Postmrk API key detected. To test emails run app locally with `heroku local web`')
+      }
 
       res.render('hybrid/complete', {
         scenario: scenario,
