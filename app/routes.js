@@ -26,7 +26,6 @@ router.post('/enter-details', function (req, res) {
   var companyErr = {}
   var errorFlag = false
   var scenario = {}
-  var i = 0
 
   // VALIDATE USER INPUTS
   if (companyno.length < 8) {
@@ -67,7 +66,8 @@ router.post('/enter-details', function (req, res) {
       scenario.penalties = [
         {
           reference: 'PEN2A/12345678',
-          period: '30 April 2015',
+          periodStart: '1 May 2014',
+          periodEnd: '30 April 2015',
           due: '1 January 2016',
           filed: '15 January 2016',
           overdue: '14 days',
@@ -118,12 +118,45 @@ router.post('/enter-details', function (req, res) {
       scenario.penalties = [
         {
           reference: 'PEN2B/12345678',
-          period: '30 April 2015',
+          periodStart: '1 May 2013',
+          periodEnd: '30 April 2014',
+          due: '1 January 2015',
+          filed: '15 January 2015',
+          overdue: '14 days',
+          band: 'Up to 1 month overdue',
+          value: 150,
+          fees: {
+            solicitor: [
+              {
+                name: 'Solicitor fee',
+                date: '9 April 2015',
+                value: 50.00
+              }
+            ],
+            court: [
+              {
+                name: 'Court fee',
+                date: '23 April 2015',
+                value: 25.00
+              },
+              {
+                name: 'Hearing fee',
+                date: '23 April 2015',
+                value: 22.00
+              }
+            ]
+          },
+          totalFees: 0
+        },
+        {
+          reference: 'PEN2C/12345678',
+          periodStart: '1 May 2014',
+          periodEnd: '30 April 2015',
           due: '1 January 2016',
           filed: '15 January 2016',
           overdue: '14 days',
           band: 'Up to 1 month overdue',
-          value: 150,
+          value: 300,
           fees: {
             solicitor: [
               {
@@ -146,15 +179,32 @@ router.post('/enter-details', function (req, res) {
             ]
           },
           totalFees: 0
+        },
+        {
+          reference: 'PEN2D/12345678',
+          periodStart: '1 May 2015',
+          periodEnd: '30 April 2016',
+          due: '1 January 2017',
+          filed: '15 January 2017',
+          overdue: '14 days',
+          band: 'Up to 1 month overdue',
+          value: 300,
+          fees: {},
+          totalFees: 0
         }
       ]
 
-      for (i = 0; i < scenario.penalties[0].fees.solicitor.length; i++) {
-        scenario.penalties[0].totalFees += scenario.penalties[0].fees.solicitor[i].value
-      }
-
-      for (i = 0; i < scenario.penalties[0].fees.court.length; i++) {
-        scenario.penalties[0].totalFees += scenario.penalties[0].fees.court[i].value
+      for (var i = 0; i < scenario.penalties.length; i++) {
+        if (scenario.penalties[i].fees.solicitor) {
+          for (var j = 0; j < scenario.penalties[i].fees.solicitor.length; j++) {
+            scenario.penalties[i].totalFees += scenario.penalties[i].fees.solicitor[j].value
+          }
+        }
+        if (scenario.penalties[i].fees.court) {
+          for (var k = 0; k < scenario.penalties[i].fees.court.length; k++) {
+            scenario.penalties[i].totalFees += scenario.penalties[i].fees.court[k].value
+          }
+        }
       }
 
       req.session.scenario = scenario
@@ -166,10 +216,16 @@ router.post('/enter-details', function (req, res) {
 // View details of a single penalty
 router.get('/view-penalty', function (req, res) {
   var scenario = req.session.scenario
+  var totalDue = 0
+
+  for (var i = 0; i < scenario.penalties.length; i++) {
+    totalDue += (scenario.penalties[i].value + scenario.penalties[i].totalFees)
+  }
 
   if (scenario != null) {
     res.render('view-penalty', {
-      scenario: scenario
+      scenario: scenario,
+      totalDue: totalDue
     })
   } else {
     res.redirect('/enter-details')
