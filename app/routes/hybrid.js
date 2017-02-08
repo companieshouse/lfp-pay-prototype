@@ -131,7 +131,7 @@ module.exports = function (router) {
               solicitor: [
                 {
                   name: 'Solicitor fee',
-                  date: '9 April 2016',
+                  date: '23 April 2016',
                   value: 50.00
                 }
               ],
