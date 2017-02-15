@@ -1,0 +1,152 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+  Pay your late filing penalty
+{% endblock %}
+
+{% block content %}
+
+<main id="content" role="main">
+
+  {% block phase_banner %}
+    {% include "includes/phase_banner_alpha.html" %}
+  {% endblock %}
+
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <h1 class="heading-xlarge">
+        Late filing penalties for {{ scenario.company.name }}
+      </h1>
+      <div>
+        <!--<table>
+          <tbody>
+            <tr>
+              <th>Penalty reference</th>
+              <td>{{ scenario.entryRef }}</td>
+            </tr>
+            <tr>
+              <th>Company</th>
+              <td>{{ scenario.company.name }}</td>
+            </tr>
+            <tr>
+              <th>Company number</th>
+              <td>{{ scenario.company.number }}</td>
+            </tr>
+            <tr>
+              <th>Accounts period</th>
+              <td>{{ scenario.penalties[0].periodStart }} to {{ scenario.penalties[0].periodEnd }}</td>
+            </tr>
+          </tbody>
+        </table>-->
+
+        <p class="lede">
+          {% if scenario.penalties | length > 1 %}
+            There are outstanding penalties for {{ scenario.penalties | length }} accounts periods
+          {% else %}
+            There is an outstanding penalty for {{ scenario.penalties | length }} accounts period
+          {% endif %}
+        </p>
+      </div>
+
+      {% if version=== 'concise' %}
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>Accounts period</th>
+                <th>Penalty amount</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for penalty in scenario.penalties %}
+                <tr>
+                  <td>{{ penalty.periodStart }} to {{ penalty.periodEnd }}</td>
+                  <td>
+                    {% if penalty.totalFees > 0 %}
+                      £{{ penalty.value + penalty.totalFees }} (Includes fees)
+                    {% else %}
+                      £{{ penalty.value }}
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="view-penalty?pen1={{ penalty.pen1 }}&pen2={{ penalty.pen2 }}" class="link">View details</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div>
+          {% for penalty in scenario.penalties %}
+            <h2 class="heading-medium">
+              {{ penalty.periodStart }} to {{ penalty.periodEnd }}
+            </h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Fee</th>
+                  <th>Date</th>
+                  <th>Fee Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Late filing penalty</td>
+                  <td>{{ penalty.filed }}</td>
+                  <td>£{{ penalty.value }}</td>
+                </tr>
+                {% if penalty.fees.solicitor %}
+                  {% for solicitor in penalty.fees.solicitor %}
+                    <tr>
+                      <td>
+                        {{ solicitor.name }}
+                      </td>
+                      <td>
+                        {{ solicitor.date }}
+                      </td>
+                      <td>£{{ solicitor.value }}</td>
+                    </tr>
+                  {% endfor %}
+                {% endif %}
+                {% if penalty.fees.court %}
+                  {% for court in penalty.fees.court %}
+                    <tr>
+                      <td>
+                        {{ court.name }}
+                      </td>
+                      <td>
+                        {{ court.date }}
+                      </td>
+                      <td>£{{ court.value }}</td>
+                    </tr>
+                  {% endfor %}
+                {% endif %}
+                {% if scenario.entryRef !== 'PEN2A/12345678' %}
+                  <tr>
+                    <td colspan="2" class="table-total">
+                      Total:
+                    </td>
+                    <td>
+                      £{{ penalty.value + penalty.totalFees }}
+                    </td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <p class="bold-medium">
+        Total amount due: £{{ totalDue }}
+      </p>
+      <p>
+        <a class="button" href="gov-pay-1" role="button">Proceed to payment</a>
+      </p>
+    </div>
+  </div>
+</main>
+
+{% endblock %}
