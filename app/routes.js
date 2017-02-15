@@ -1,15 +1,142 @@
 var express = require('express')
 var router = express.Router()
+var penaltyGroups = [
+  [
+    {
+      pen1: 'PEN1A/12345677',
+      pen2: 'PEN2A/12345677',
+      periodStart: '1 May 2014',
+      periodEnd: '30 April 2015',
+      due: '1 January 2016',
+      filed: '15 January 2016',
+      overdue: '14 days',
+      band: 'Up to 1 month overdue',
+      value: 150,
+      fees: {
+        solicitor: [
+          {
+            name: 'Solicitor fee',
+            date: '9 April 2016',
+            value: 50.00
+          }
+        ],
+        court: [
+          {
+            name: 'Court fee',
+            date: '23 April 2016',
+            value: 25.00
+          },
+          {
+            name: 'Hearing fee',
+            date: '23 April 2016',
+            value: 22.00
+          }
+        ]
+      },
+      totalFees: 0
+    }
+  ],
+  [
+    {
+      pen1: 'PEN1A/12345678',
+      pen2: 'PEN2A/12345678',
+      periodStart: '1 May 2013',
+      periodEnd: '30 April 2014',
+      due: '1 January 2015',
+      filed: '15 January 2015',
+      overdue: '14 days',
+      band: 'Up to 1 month overdue',
+      value: 150,
+      fees: {
+        solicitor: [
+          {
+            name: 'Solicitor fee',
+            date: '23 April 2015',
+            value: 50.00
+          }
+        ],
+        court: [
+          {
+            name: 'Court fee',
+            date: '23 April 2015',
+            value: 25.00
+          },
+          {
+            name: 'Hearing fee',
+            date: '23 April 2015',
+            value: 22.00
+          }
+        ]
+      },
+      totalFees: 0
+    },
+    {
+      pen1: 'PEN1A/12345679',
+      pen2: 'PEN2A/12345679',
+      periodStart: '1 May 2014',
+      periodEnd: '30 April 2015',
+      due: '1 January 2016',
+      filed: '15 January 2016',
+      overdue: '14 days',
+      band: 'Up to 1 month overdue',
+      value: 300,
+      fees: {
+        solicitor: [
+          {
+            name: 'Solicitor fee',
+            date: '23 April 2016',
+            value: 50.00
+          }
+        ],
+        court: [
+          {
+            name: 'Court fee',
+            date: '23 April 2016',
+            value: 25.00
+          },
+          {
+            name: 'Hearing fee',
+            date: '23 April 2016',
+            value: 22.00
+          }
+        ]
+      },
+      totalFees: 0
+    },
+    {
+      pen1: 'PEN1A/12345670',
+      pen2: 'PEN2A/12345670',
+      periodStart: '1 May 2015',
+      periodEnd: '30 April 2016',
+      due: '1 January 2017',
+      filed: '15 January 2017',
+      overdue: '14 days',
+      band: 'Up to 1 month overdue',
+      value: 300,
+      fees: {},
+      totalFees: 0
+    }
+  ]
+]
 
 // Route index page
 router.get('/', function (req, res) {
   req.session.destroy()
-  res.render('start')
+  res.render('index')
+})
+
+router.post('/', function (req, res) {
+  if (req.body.version) {
+    req.session.version = req.body.version
+    res.redirect('/start')
+  } else {
+    res.render('index')
+  }
 })
 
 // Start page
 router.get('/start', function (req, res) {
-  req.session.destroy()
+  // req.session.destroy()
   res.render('start')
 })
 
@@ -34,7 +161,15 @@ router.post('/enter-details', function (req, res) {
     companyErr.flag = true
     errorFlag = true
   }
-  if (penalty !== 'PEN2A/12345678' && penalty !== 'PEN2B/12345678') {
+  if (
+    penalty !== 'PEN1A/12345677' &&
+    penalty !== 'PEN2A/12345677' &&
+    penalty !== 'PEN1A/12345678' &&
+    penalty !== 'PEN2A/12345678' &&
+    penalty !== 'PEN1A/12345679' &&
+    penalty !== 'PEN2A/12345679' &&
+    penalty !== 'PEN1A/12345670'
+   ) {
     penaltyErr.type = 'invalid'
     penaltyErr.msg = 'Enter your penalty reference exactly as shown on your penalty letter'
     penaltyErr.flag = true
@@ -56,16 +191,17 @@ router.post('/enter-details', function (req, res) {
       companyno: companyno
     })
   } else {
-    if (penalty === 'PEN2A/12345678') {
+    if (penalty === 'PEN1A/12345677' || penalty === 'PEN2A/12345677') {
       // SINGLE PENALTY WITH FEES
       scenario.entryRef = penalty
       scenario.company = {
-        name: 'XYZ ARCHITECTS LIMITED',
+        name: 'BATTERSEA POWER LIMITED',
         number: companyno
       }
       scenario.penalties = [
         {
-          reference: 'PEN2A/12345678',
+          pen1: 'PEN1A/12345677',
+          pen2: 'PEN2A/12345677',
           periodStart: '1 May 2014',
           periodEnd: '30 April 2015',
           due: '1 January 2016',
@@ -107,8 +243,8 @@ router.post('/enter-details', function (req, res) {
       }
 
       req.session.scenario = scenario
-      res.redirect('/view-penalty')
-    } else if (penalty === 'PEN2B/12345678') {
+      res.redirect('/view-penalties')
+    } else if (penalty === 'PEN1A/12345678' || penalty === 'PEN2A/12345678' || penalty === 'PEN1A/123456789' || penalty === 'PEN2A/123456789' || penalty === 'PEN1A/123456780') {
       // MULTIPLE PENALTIES
       scenario.entryRef = penalty
       scenario.company = {
@@ -117,7 +253,8 @@ router.post('/enter-details', function (req, res) {
       }
       scenario.penalties = [
         {
-          reference: 'PEN2B/12345678',
+          pen1: 'PEN1A/12345678',
+          pen2: 'PEN2A/12345678',
           periodStart: '1 May 2013',
           periodEnd: '30 April 2014',
           due: '1 January 2015',
@@ -129,7 +266,7 @@ router.post('/enter-details', function (req, res) {
             solicitor: [
               {
                 name: 'Solicitor fee',
-                date: '9 April 2015',
+                date: '23 April 2015',
                 value: 50.00
               }
             ],
@@ -149,7 +286,8 @@ router.post('/enter-details', function (req, res) {
           totalFees: 0
         },
         {
-          reference: 'PEN2C/12345678',
+          pen1: 'PEN1A/12345679',
+          pen2: 'PEN2A/12345679',
           periodStart: '1 May 2014',
           periodEnd: '30 April 2015',
           due: '1 January 2016',
@@ -161,7 +299,7 @@ router.post('/enter-details', function (req, res) {
             solicitor: [
               {
                 name: 'Solicitor fee',
-                date: '9 April 2016',
+                date: '23 April 2016',
                 value: 50.00
               }
             ],
@@ -181,7 +319,8 @@ router.post('/enter-details', function (req, res) {
           totalFees: 0
         },
         {
-          reference: 'PEN2D/12345678',
+          pen1: 'PEN1A/12345670',
+          pen2: '',
           periodStart: '1 May 2015',
           periodEnd: '30 April 2016',
           due: '1 January 2017',
@@ -208,24 +347,44 @@ router.post('/enter-details', function (req, res) {
       }
 
       req.session.scenario = scenario
-      res.redirect('/view-penalty')
+      res.redirect('/view-penalties')
     }
+  }
+})
+
+// View details of a single penalty
+router.get('/view-penalties', function (req, res) {
+  var scenario = req.session.scenario
+  var version = req.session.version
+  var totalDue = 0
+
+  if (scenario != null) {
+    for (var i = 0; i < scenario.penalties.length; i++) {
+      totalDue += (scenario.penalties[i].value + scenario.penalties[i].totalFees)
+    }
+
+    req.session.totalDue = totalDue
+    res.render('view-penalties', {
+      scenario: scenario,
+      version: version,
+      totalDue: totalDue
+    })
+  } else {
+    res.redirect('/enter-details')
   }
 })
 
 // View details of a single penalty
 router.get('/view-penalty', function (req, res) {
   var scenario = req.session.scenario
-  var totalDue = 0
-
-  for (var i = 0; i < scenario.penalties.length; i++) {
-    totalDue += (scenario.penalties[i].value + scenario.penalties[i].totalFees)
-  }
+  var pen1 = req.query.pen1
+  var pen2 = req.query.pen2
 
   if (scenario != null) {
     res.render('view-penalty', {
       scenario: scenario,
-      totalDue: totalDue
+      pen1: pen1,
+      pen2: pen2
     })
   } else {
     res.redirect('/enter-details')
@@ -235,10 +394,12 @@ router.get('/view-penalty', function (req, res) {
 // gov uk pay page
 router.get('/gov-pay-1', function (req, res) {
   var scenario = req.session.scenario
+  var totalDue = req.session.totalDue
 
   if (scenario != null) {
     res.render('gov-pay-1', {
-      scenario: scenario
+      scenario: scenario,
+      totalDue: totalDue
     })
   } else {
     res.redirect('/enter-details')
@@ -248,6 +409,7 @@ router.get('/gov-pay-1', function (req, res) {
 // gov uk pay page
 router.post('/gov-pay-1', function (req, res) {
   var scenario = req.session.scenario
+  var totalDue = req.session.totalDue
   var payment = {}
   var errors = {}
   var errorFlag = false
@@ -348,6 +510,7 @@ router.post('/gov-pay-1', function (req, res) {
     res.render('gov-pay-1', {
       errors: errors,
       scenario: scenario,
+      totalDue: totalDue,
       payment: payment
     })
   } else {
@@ -359,13 +522,15 @@ router.post('/gov-pay-1', function (req, res) {
 // gov uk pay page
 router.get('/gov-pay-2', function (req, res) {
   var scenario = req.session.scenario
+  var totalDue = req.session.totalDue
   var payment = ''
 
   if (scenario != null) {
     payment = req.session.payment
     res.render('gov-pay-2', {
       scenario: scenario,
-      payment: payment
+      payment: payment,
+      totalDue: totalDue
     })
   } else {
     res.redirect('/enter-details')
@@ -375,12 +540,13 @@ router.get('/gov-pay-2', function (req, res) {
 // process complete
 router.get('/complete', function (req, res) {
   var scenario = req.session.scenario
+  var totalDue = req.session.totalDue
   var payment = ''
-  var totalPaid = 0
+  // var totalPaid = 0
 
   if (scenario != null) {
     payment = req.session.payment
-    totalPaid = (scenario.penalties[0].value + scenario.penalties[0].totalFees)
+    // totalPaid = (scenario.penalties[0].value + scenario.penalties[0].totalFees)
 
     // Send confirmation email
 
@@ -395,7 +561,7 @@ router.get('/complete', function (req, res) {
         'TemplateModel': {
           'scenario': scenario,
           'payment': payment,
-          'totalPaid': totalPaid
+          'totalPaid': totalDue
         }
       }, function (error, success) {
         if (error) {

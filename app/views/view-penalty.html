@@ -14,132 +14,93 @@
 
   <div class="grid-row">
     <div class="column-two-thirds">
+      <p>
+        <a href="view-penalties" class="link-back">Back</a>
+      </p>
       <h1 class="heading-xlarge">
         Penalty details
       </h1>
-      <div>
-        <table>
-          <tbody>
-            <!--<tr>
-              <th>Penalty reference</th>
-              <td>{{ scenario.entryRef }}</td>
-            </tr>-->
-            <tr>
-              <th>Company</th>
-              <td>{{ scenario.company.name }}</td>
-            </tr>
-            <tr>
-              <th>Company number</th>
-              <td>{{ scenario.company.number }}</td>
-            </tr>
-            <!--<tr>
-              <th>Accounts period</th>
-              <td>{{ scenario.penalties[0].periodStart }} to {{ scenario.penalties[0].periodEnd }}</td>
-            </tr>-->
-          </tbody>
-        </table>
-
-        <p class="lede">
-          {{ scenario.company.name }} has outstanding penalties for {{ scenario.penalties | length }} account periods
-        </p>
-      </div>
-
-
-      <div style="display: none;">
-        <table>
-          <thead>
-            <tr>
-              <th>Account period</th>
-              <th>Penalty amount</th>
-
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for penalty in scenario.penalties %}
-              <tr>
-                <td>{{ penalty.periodStart }} to {{ penalty.periodEnd }}</td>
-                <td>
-                  {% if penalty.totalFees > 0 %}
-                    £{{ penalty.value + penalty.totalFees }} (Includes fees)
-                  {% else %}
-                    £{{ penalty.value }}
-                  {% endif %}
-
-                </td>
-                <td>
-                  <a href="" class="link">View details</a>
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
 
 
       {% for penalty in scenario.penalties %}
-        <div style="display: block;">
-          <h2 class="heading-medium">
-            {{ penalty.periodStart }} to {{ penalty.periodEnd }}
-          </h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Fee</th>
-                <th>Date</th>
-                <th>Fee Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Late filing penalty</td>
-                <td>{{ penalty.filed }}</td>
-                <td>£{{ penalty.value }}</td>
-              </tr>
-              {% if penalty.fees.solicitor %}
-                {% for solicitor in penalty.fees.solicitor %}
-                  <tr>
-                    <td>
-                      {{ solicitor.name }}
-                    </td>
-                    <td>
-                      {{ solicitor.date }}
-                    </td>
-                    <td>£{{ solicitor.value }}</td>
-                  </tr>
-                {% endfor %}
-              {% endif %}
-              {% if penalty.fees.court %}
-                {% for court in penalty.fees.court %}
-                  <tr>
-                    <td>
-                      {{ court.name }}
-                    </td>
-                    <td>
-                      {{ court.date }}
-                    </td>
-                    <td>£{{ court.value }}</td>
-                  </tr>
-                {% endfor %}
-              {% endif %}
-              <tr>
-                <td colspan="2" class="table-total">
-                  Total:
-                </td>
-                <td>
-                  £{{ penalty.value + penalty.totalFees }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        {% if penalty.pen1 === pen1 or penalty.pen2 === pen2 %}
+          <div>
+            <table>
+              <tbody>
+                <!--<tr>
+                  <th>Company</th>
+                  <td>{{ scenario.company.name }}</td>
+                </tr>
+                <tr>
+                  <th>Company number</th>
+                  <td>{{ scenario.company.number }}</td>
+                </tr>-->
+                <tr>
+                  <th>Accounts period</th>
+                  <td>{{ penalty.periodStart }} to {{ penalty.periodEnd }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="display: block;">
+            <h2 class="heading-medium">
+              Summary of fees
+            </h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Fee</th>
+                  <th>Date</th>
+                  <th>Fee Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Late filing penalty</td>
+                  <td>{{ penalty.filed }}</td>
+                  <td>£{{ penalty.value }}</td>
+                </tr>
+                {% if penalty.fees.solicitor %}
+                  {% for solicitor in penalty.fees.solicitor %}
+                    <tr>
+                      <td>
+                        {{ solicitor.name }}
+                      </td>
+                      <td>
+                        {{ solicitor.date }}
+                      </td>
+                      <td>£{{ solicitor.value }}</td>
+                    </tr>
+                  {% endfor %}
+                {% endif %}
+                {% if penalty.fees.court %}
+                  {% for court in penalty.fees.court %}
+                    <tr>
+                      <td>
+                        {{ court.name }}
+                      </td>
+                      <td>
+                        {{ court.date }}
+                      </td>
+                      <td>£{{ court.value }}</td>
+                    </tr>
+                  {% endfor %}
+                {% endif %}
+                <tr>
+                  <td colspan="2" class="table-total">
+                    Total:
+                  </td>
+                  <td>
+                    £{{ penalty.value + penalty.totalFees }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        {% endif %}
       {% endfor %}
-
-      <p class="bold-medium">
-        Total amount due: £{{ totalDue }}
-      </p>
       <p>
-        <a class="button" href="gov-pay-1" role="button">Proceed to payment</a>
+        <a class="button" href="view-penalties" role="button">Back to penalties</a>
       </p>
     </div>
   </div>
