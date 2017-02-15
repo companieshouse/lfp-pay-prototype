@@ -23,46 +23,79 @@ GOV.UK prototype kit
         Enter amount
       </h1>
 
-			<h2 class="heading-medium">Total outstanding to pay: £527.00</h2>
+      {% if paymentErr or mudErr %}
+      <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+        <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
+          We couldn't find your penalty details
+        </h1>
+        <p>
+          You must provide a company number and penalty reference to pay a late filing penalty.
+        </p>
+        <ul class="error-summary-list">
+          {% if paymentErr.type %}
+            <li>
+              <a href="#invoice-number">{{ paymentErr.msg }}</a>
+            </li>
+          {% endif %}
+          {% if mudErr.type %}
+            <li>
+              <a href="#mud-day">{{ mudErr.msg }}</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+      {% endif %}
+
+			<h2 class="heading-medium">Total outstanding to pay: £{{ scenario.penalties[0].value + scenario.penalties[0].totalFees }}</h2>
 
 			<!--<h2 class="heading-medium">Payment details</h2>-->
 
-			<form>
-				<div class="form-group">
+			<form class="form" method="POST" action="enter-amount">
+				<div class="form-group {% if paymentErr.type %} error{% endif %}">
 					<label class="form-label-bold" for="amount-to-pay">
 						Amount to pay
 						<span class="form-hint">
 							Pay some or all of the amount outstanding
 						</span>
+            {% if paymentErr.type %}
+              <span class="error-message">
+                {{ paymentErr.msg }}
+              </span>
+            {% endif %}
 					</label>
-					<input class="form-control" id="invoice-number" type="number">
+					<input class="form-control" id="invoice-number" type="number" name="paymentAmount" value="{{ paymentAmount }}">
 				</div>
 
-			   <div class="form-group">
+			   <div class="form-group {% if mudErr.type %} error{% endif %}">
 			     <fieldset>
 			       <legend>
 			         <span class="form-label-bold">
 			           Made up date
 			         </span>
 			         <span class="form-hint" id="dob-hint">Optionally select a made up date</span>
+               {% if mudErr.type %}
+                 <span class="error-message">
+                   {{ mudErr.msg }}
+                 </span>
+               {% endif %}
 			       </legend>
 			       <div class="form-date">
 			         <div class="form-group form-group-day">
-			           <label class="form-label" for="dob-day">Day</label>
-			           <input class="form-control" id="dob-day" name="dob-day" type="number" pattern="[0-9]*" min="0" max="31" aria-describedby="dob-hint">
+			           <label class="form-label" for="mud-day">Day</label>
+			           <input class="form-control" id="mud-day" name="mudDay" type="number" pattern="[0-9]*" min="0" max="31" aria-describedby="dob-hint" value="{{ mud.day }}">
 			         </div>
 			         <div class="form-group form-group-month">
-			           <label class="form-label" for="dob-month">Month</label>
-			           <input class="form-control" id="dob-month" name="dob-month" type="number" pattern="[0-9]*" min="0" max="12">
+			           <label class="form-label" for="mud-month">Month</label>
+			           <input class="form-control" id="mud-month" name="mudMonth" type="number" pattern="[0-9]*" min="0" max="12" value="{{ mud.month }}">
 			         </div>
 			         <div class="form-group form-group-year">
-			           <label class="form-label" for="dob-year">Year</label>
-			           <input class="form-control" id="dob-year" name="dob-year" type="number" pattern="[0-9]*" min="0" max="2016">
+			           <label class="form-label" for="mmud-year">Year</label>
+			           <input class="form-control" id="mud-year" name="mudYear" type="number" pattern="[0-9]*" min="0" max="2016" value="{{ mud.year }}">
 			         </div>
 			       </div>
 			     </fieldset>
 			   </div>
-		 	</form>
+
 
 			<div class="panel panel-border-wide">
 			  <p>Please be aware that any payment will be allocated against the oldest court costs followed by the oldest penalty unless you provide a Made Up Date (MUD).</p>
@@ -74,11 +107,12 @@ GOV.UK prototype kit
 			</div>
 
 			<p class="form-group">
-				<a class="button" href="review-amount" role="button">Continue</a>
+				<input type="submit" class="button" role="button" value="Continue" />
 			</p>
 			<p>
 				Should you wish to pay by instalments, please email <a href=" c ">lfpinstalments@companieshouse.gov.uk</a>.
 			</p>
+      </form>
 
     </div>
 	</div>

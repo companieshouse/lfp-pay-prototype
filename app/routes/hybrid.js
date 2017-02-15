@@ -1,22 +1,17 @@
 module.exports = function (router) {
   // Start page
-  router.get('/ABS/start', function (req, res) {
+  router.get('/hybrid/start', function (req, res) {
     req.session.destroy()
-    res.render('ABS/start')
-  })
-
-  // sign in
-  router.get('/ABS/sign-in', function (req, res) {
-    res.render('ABS/sign-in')
+    res.render('hybrid/start')
   })
 
   // Enter details
-  router.get('/ABS/enter-details', function (req, res) {
-    res.render('ABS/enter-details')
+  router.get('/hybrid/enter-details', function (req, res) {
+    res.render('hybrid/enter-details')
   })
 
   // Enter details
-  router.post('/ABS/enter-details', function (req, res) {
+  router.post('/hybrid/enter-details', function (req, res) {
     var penalty = req.body.reference
     var companyno = req.body.companyno
     var penaltyErr = {}
@@ -45,9 +40,9 @@ module.exports = function (router) {
       errorFlag = true
     }
 
-    // CHECK ERROR FLAG
+    // hybridECK ERROR FLAG
     if (errorFlag === true) {
-      res.render('ABS/enter-details', {
+      res.render('hybrid/enter-details', {
         penaltyErr: penaltyErr,
         companyErr: companyErr,
         penalty: penalty,
@@ -97,7 +92,7 @@ module.exports = function (router) {
         }
 
         req.session.scenario = scenario
-        res.redirect('/ABS/view-trans')
+        res.redirect('/hybrid/view-penalty')
       } else if (penalty === 'PEN2B/12345678') {
         scenario.entryRef = penalty
         scenario.company = {
@@ -135,20 +130,21 @@ module.exports = function (router) {
               */
               solicitor: [
                 {
-                  name: 'COSTS',
+                  name: 'Solicitor fee',
                   date: '23 April 2016',
-                  value: 50.00,
-                  ref: 'REF-1',
-                  mud: '30 April 2015'
+                  value: 50.00
                 }
               ],
               court: [
                 {
-                  name: 'COSTS',
+                  name: 'Court fee',
                   date: '23 April 2016',
-                  value: 47.00,
-                  ref: 'REF-2',
-                  mud: '30 April 2015'
+                  value: 25.00
+                },
+                {
+                  name: 'Hearing fee',
+                  date: '23 April 2016',
+                  value: 22.00
                 }
               ]
             },
@@ -171,7 +167,7 @@ module.exports = function (router) {
         }
 
         req.session.scenario = scenario
-        res.redirect('/ABS/view-trans')
+        res.redirect('/hybrid/view-penalty')
       } else if (penalty === 'PEN1A/12345678') {
         scenario.entryRef = penalty
         scenario.company = {
@@ -191,157 +187,40 @@ module.exports = function (router) {
           }
         ]
         req.session.scenario = scenario
-        res.redirect('/ABS/view-trans')
+        res.redirect('/hybrid/view-penalty')
       }
     }
   })
 
-  // view transaction history
-  router.get('/ABS/view-trans', function (req, res) {
+  // View details of a single penalty
+  router.get('/hybrid/view-penalty', function (req, res) {
     var scenario = req.session.scenario
 
     if (scenario != null) {
-      res.render('ABS/view-trans', {
+      res.render('hybrid/view-penalty', {
         scenario: scenario
       })
     } else {
-      res.redirect('/ABS/enter-details')
-    }
-  })
-
-  // enter amount you want to pay
-  router.get('/ABS/enter-amount', function (req, res) {
-    var scenario = req.session.scenario
-
-    if (scenario != null) {
-      res.render('ABS/enter-amount', {
-        scenario: scenario
-      })
-    } else {
-      res.redirect('/ABS/enter-details')
-    }
-  })
-
-  // enter amount you want to pay
-  router.post('/ABS/enter-amount', function (req, res) {
-    var scenario = req.session.scenario
-    var mud = {
-      day: req.body.mudDay,
-      month: req.body.mudMonth,
-      year: req.body.mudYear
-    }
-    var paymentAmount = req.body.paymentAmount
-    var paymentErr = {}
-    var mudErr = {}
-    var errorFlag = false
-
-    // VALIDATE USER INPUTS
-    if (paymentAmount === '') {
-      paymentErr.type = 'null'
-      paymentErr.msg = 'You must tell us how much you want to pay'
-      errorFlag = true
-    }
-    if (mud.day !== '' || mud.month !== '' || mud.year !== '') {
-      if (mud.day === '' || mud.month === '' || mud.year === '') {
-        mudErr.type = 'null'
-        mudErr.msg = 'You must provide a full made up date'
-        errorFlag = true
-      }
-    }
-
-    // CHECK ERROR FLAG
-    if (errorFlag === true) {
-      res.render('ABS/enter-amount', {
-        scenario: scenario,
-        paymentErr: paymentErr,
-        mudErr: mudErr,
-        paymentAmount: paymentAmount,
-        mud: mud
-      })
-    } else {
-      req.session.paymentAmount = paymentAmount
-      if (mud.day !== '') {
-        mud.day = parseInt(mud.day)
-        switch (parseInt(mud.month)) {
-          case 1:
-            mud.month = 'January'
-            break
-          case 2:
-            mud.month = 'February'
-            break
-          case 3:
-            mud.month = 'March'
-            break
-          case 4:
-            mud.month = 'April'
-            break
-          case 5:
-            mud.month = 'May'
-            break
-          case 6:
-            mud.month = 'June'
-            break
-          case 7:
-            mud.month = 'July'
-            break
-          case 8:
-            mud.month = 'August'
-            break
-          case 9:
-            mud.month = 'September'
-            break
-          case 10:
-            mud.month = 'October'
-            break
-          case 11:
-            mud.month = 'November'
-            break
-          case 12:
-            mud.month = 'December'
-            break
-          default:
-            mud.month = 'January'
-        }
-        req.session.mud = mud
-      }
-      res.redirect('/ABS/review-amount')
-    }
-  })
-
-  // review amount you want to pay
-  router.get('/ABS/review-amount', function (req, res) {
-    var scenario = req.session.scenario
-    var paymentAmount = req.session.paymentAmount
-    var mud = req.session.mud
-
-    res.render('ABS/review-amount', {
-      scenario: scenario,
-      paymentAmount: paymentAmount,
-      mud: mud
-    })
-  })
-
-  // gov uk pay page
-  router.get('/ABS/gov-pay-1', function (req, res) {
-    var scenario = req.session.scenario
-    var paymentAmount = req.session.paymentAmount
-    var mud = req.session.mud
-
-    if (scenario != null) {
-      res.render('ABS/gov-pay-1', {
-        scenario: scenario,
-        paymentAmount: paymentAmount,
-        mud: mud
-      })
-    } else {
-      res.redirect('/ABS/enter-details')
+      res.redirect('/hybrid/enter-details')
     }
   })
 
   // gov uk pay page
-  router.post('/ABS/gov-pay-1', function (req, res) {
+  router.get('/hybrid/gov-pay-1', function (req, res) {
     var scenario = req.session.scenario
-    var paymentAmount = req.session.paymentAmount
+
+    if (scenario != null) {
+      res.render('hybrid/gov-pay-1', {
+        scenario: scenario
+      })
+    } else {
+      res.redirect('/hybrid/enter-details')
+    }
+  })
+
+  // gov uk pay page
+  router.post('/hybrid/gov-pay-1', function (req, res) {
+    var scenario = req.session.scenario
     var payment = {}
     var errors = {}
     var errorFlag = false
@@ -437,13 +316,12 @@ module.exports = function (router) {
       errorFlag = true
     }
 
-    // CHECK ERROR FLAG
+    // hybridECK ERROR FLAG
     if (errorFlag === true) {
-      res.render('ABS/gov-pay-1', {
+      res.render('hybrid/gov-pay-1', {
         errors: errors,
         scenario: scenario,
-        payment: payment,
-        paymentAmount: paymentAmount
+        payment: payment
       })
     } else {
       req.session.payment = payment
@@ -452,36 +330,62 @@ module.exports = function (router) {
   })
 
   // gov uk pay page
-  router.get('/ABS/gov-pay-2', function (req, res) {
-    var scenario = req.session.scenario
-    var paymentAmount = req.session.paymentAmount
-    var payment = ''
-
-    if (scenario != null) {
-      payment = req.session.payment
-      res.render('ABS/gov-pay-2', {
-        scenario: scenario,
-        payment: payment,
-        paymentAmount: paymentAmount
-      })
-    } else {
-      res.redirect('/ABS/enter-details')
-    }
-  })
-
-  // process complete
-  router.get('/ABS/complete', function (req, res) {
+  router.get('/hybrid/gov-pay-2', function (req, res) {
     var scenario = req.session.scenario
     var payment = ''
 
     if (scenario != null) {
       payment = req.session.payment
-      res.render('ABS/complete', {
+      res.render('hybrid/gov-pay-2', {
         scenario: scenario,
         payment: payment
       })
     } else {
-      res.redirect('/ABS/enter-details')
+      res.redirect('/hybrid/enter-details')
+    }
+  })
+
+  // process complete
+  router.get('/hybrid/complete', function (req, res) {
+    var scenario = req.session.scenario
+    var payment = ''
+    var totalPaid = 0
+
+    if (scenario != null) {
+      payment = req.session.payment
+      totalPaid = (scenario.penalties[0].value + scenario.penalties[0].totalFees)
+
+      // Send confirmation email
+
+      if (process.env.POSTMARK_API_KEY) {
+        var postmark = require('postmark')
+        var client = new postmark.Client(process.env.POSTMARK_API_KEY)
+
+        client.sendEmailWithTemplate({
+          'From': 'owilliams@companieshouse.gov.uk',
+          'To': payment.emailAddress,
+          'TemplateId': process.env.ETID_CONFIRMATION,
+          'TemplateModel': {
+            'scenario': scenario,
+            'payment': payment,
+            'totalPaid': totalPaid
+          }
+        }, function (error, success) {
+          if (error) {
+            console.error('Unable to send via postmark: ' + error.message)
+            return
+          }
+        })
+      } else {
+        console.log('No Postmrk API key detected. To test emails run app locally with `heroku local web`')
+      }
+
+      res.render('hybrid/complete', {
+        scenario: scenario,
+        payment: payment
+      })
+    } else {
+      res.redirect('/hybrid/enter-details')
     }
   })
 }

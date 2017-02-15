@@ -22,18 +22,18 @@
         <a href="" class="link-back">Back</a>
       </p>
       <h1 class="heading-xlarge">
-        Additional costs incurred for penalty {{ scenario.penalties[0].reference }}
+        Additional fees incurred for penalty {{ scenario.penalties[0].reference }}
       </h1>
       <p class="lede">
-        The table below shows all additional costs incurred by the delayed payment of this penalty.
+        The table below shows all additional fees incurred by the delayed payment of this penalty.
       </p>
       {% if scenario.penalties[0].fees !== null %}
       <table>
         <thead>
           <tr>
-            <th>Action</th>
+            <th>Fee</th>
             <th>Date</th>
-            <th>Cost incurred</th>
+            <th>Fee amount</th>
           </tr>
         </thead>
         <tbody>
@@ -80,7 +80,7 @@
        </table>
       {% endif %}
       <p class="bold-medium">
-        Total costs incurred: £{{ scenario.penalties[0].totalFees }}
+        Total fees incurred: £{{ scenario.penalties[0].totalFees }}
       </p>
       <p>
         <a class="button" href="view-penalty" role="button">Return to penalty details</a>

@@ -15,17 +15,41 @@ module.exports = function (router) {
     var penalty = req.body.reference
     var companyno = req.body.companyno
     var penaltyErr = {}
+    var companyErr = {}
+    var errorFlag = false
     var scenario = {}
     var i = 0
 
+    // VALIDATE USER INPUTS
+    if (companyno.length < 8) {
+      companyErr.type = 'invalid'
+      companyErr.msg = 'You must enter your full eight character company number'
+      companyErr.flag = true
+      errorFlag = true
+    }
+    if (penalty !== 'PEN1A/12345678' && penalty !== 'PEN2B/12345678' && penalty !== 'PEN2A/12345678') {
+      penaltyErr.type = 'invalid'
+      penaltyErr.msg = 'Enter your penalty reference exactly as shown on your penalty letter'
+      penaltyErr.flag = true
+      errorFlag = true
+    }
     if (penalty === '') {
       penaltyErr.type = 'blank'
-      penaltyErr.msg = 'You must enter a penalty reference.'
+      penaltyErr.msg = 'You must enter a penalty reference'
+      penaltyErr.flag = true
+      errorFlag = true
+    }
+
+    // CHECK ERROR FLAG
+    if (errorFlag === true) {
       res.render('CH/enter-details', {
-        penaltyErr: penaltyErr
+        penaltyErr: penaltyErr,
+        companyErr: companyErr,
+        penalty: penalty,
+        companyno: companyno
       })
     } else {
-      if (penalty === 'PEN2A/1234567') {
+      if (penalty === 'PEN2A/12345678') {
         scenario.entryRef = penalty
         scenario.company = {
           name: 'LAKE AVIATION LIMITED',
@@ -33,7 +57,7 @@ module.exports = function (router) {
         }
         scenario.penalties = [
           {
-            reference: 'PEN2A/1234567',
+            reference: 'PEN2A/12345678',
             period: '30 April 2015',
             due: '1 January 2016',
             filed: '15 January 2016',
@@ -69,7 +93,7 @@ module.exports = function (router) {
 
         req.session.scenario = scenario
         res.redirect('/CH/view-penalty')
-      } else if (penalty === 'PEN2B/1234567') {
+      } else if (penalty === 'PEN2B/12345678') {
         scenario.entryRef = penalty
         scenario.company = {
           name: 'XYZ ARCHITECTS LIMITED',
@@ -77,7 +101,7 @@ module.exports = function (router) {
         }
         scenario.penalties = [
           {
-            reference: 'PEN2B/1234567',
+            reference: 'PEN2B/12345678',
             period: '30 April 2015',
             due: '1 January 2016',
             filed: '15 January 2016',
@@ -107,7 +131,7 @@ module.exports = function (router) {
               solicitor: [
                 {
                   name: 'Solicitor letter',
-                  date: '9 April 2016',
+                  date: '23 April 2016',
                   value: 50.00
                 }
               ],
@@ -139,7 +163,7 @@ module.exports = function (router) {
 
         req.session.scenario = scenario
         res.redirect('/CH/view-penalty')
-      } else if (penalty === 'PEN1A/1234567') {
+      } else if (penalty === 'PEN1A/12345678') {
         scenario.entryRef = penalty
         scenario.company = {
           name: 'TEST METHODS LIMITED',
@@ -147,7 +171,7 @@ module.exports = function (router) {
         }
         scenario.penalties = [
           {
-            reference: 'PEN1A/1234567',
+            reference: 'PEN1A/12345678',
             period: '30 April 2015',
             due: '1 January 2016',
             filed: '15 January 2016',
@@ -159,12 +183,6 @@ module.exports = function (router) {
         ]
         req.session.scenario = scenario
         res.redirect('/CH/view-penalty')
-      } else {
-        penaltyErr.type = 'invalid'
-        penaltyErr.msg = 'Enter your penalty reference exactly as shown on your penalty letter'
-        res.render('CH/enter-details', {
-          penaltyErr: penaltyErr
-        })
       }
     }
   })
@@ -182,12 +200,12 @@ module.exports = function (router) {
     }
   })
 
-  // View additional costs incurred on a penalty
-  router.get('/CH/view-costs', function (req, res) {
+  // View additional fees incurred on a penalty
+  router.get('/CH/view-fees', function (req, res) {
     var scenario = req.session.scenario
 
     if (scenario != null) {
-      res.render('CH/view-costs', {
+      res.render('CH/view-fees', {
         scenario: scenario
       })
     } else {
@@ -212,24 +230,110 @@ module.exports = function (router) {
   router.post('/CH/gov-pay-1', function (req, res) {
     var scenario = req.session.scenario
     var payment = {}
+    var errors = {}
+    var errorFlag = false
 
-    if (scenario != null) {
-      payment.cardNumber = req.body.cardNumber
-      payment.expMonth = req.body.expMonth
-      payment.expYear = req.body.expYear
-      payment.fullName = req.body.fullName
-      payment.securityCode = req.body.securityCode
-      payment.buildingStreet = req.body.buildingStreet
-      payment.buildingAndStreet = req.body.buildingAndStreet
-      payment.townOrCity = req.body.townOrCity
-      payment.postCode = req.body.postCode
-      payment.emailAddress = req.body.emailAddress
+    payment.cardNumber = req.body.cardNumber
+    payment.expMonth = req.body.expMonth
+    payment.expYear = req.body.expYear
+    payment.fullName = req.body.fullName
+    payment.securityCode = req.body.securityCode
+    payment.buildingStreet = req.body.buildingStreet
+    payment.buildingAndStreet = req.body.buildingAndStreet
+    payment.townOrCity = req.body.townOrCity
+    payment.postCode = req.body.postCode
+    payment.emailAddress = req.body.emailAddress
 
-      // payment.
+    // VALIDATE USER INPUTS
+    if (payment.cardNumber === '') {
+      errors.cardNumber = {
+        type: 'blank',
+        msg: 'A card number is required',
+        ref: 'card-number'
+      }
+      errorFlag = true
+    } else if (payment.cardNumber.length < 16 || payment.cardNumber.length > 16) {
+      errors.cardNumber = {
+        type: 'invalid',
+        msg: 'The card number must be 16 digits in length',
+        ref: 'card-number'
+      }
+      errorFlag = true
+    }
+
+    if (payment.expMonth === '' || payment.expYear === '') {
+      errors.expiry = {
+        type: 'blank',
+        msg: 'A card expiry month and year are required',
+        ref: 'exp-month'
+      }
+      errorFlag = true
+    }
+
+    if (payment.fullName === '') {
+      errors.fullName = {
+        type: 'blank',
+        msg: 'The name of the cardholder is required',
+        ref: 'full-name'
+      }
+      errorFlag = true
+    }
+
+    if (payment.securityCode === '') {
+      errors.securityCode = {
+        type: 'blank',
+        msg: 'A card security code is required',
+        ref: 'security-number'
+      }
+      errorFlag = true
+    }
+
+    if (payment.buildingStreet === '') {
+      errors.buildingStreet = {
+        type: 'blank',
+        msg: 'A building name and/or number and street is required',
+        ref: 'building-street'
+      }
+      errorFlag = true
+    }
+
+    if (payment.townOrCity === '') {
+      errors.townOrCity = {
+        type: 'blank',
+        msg: 'A town or city is required',
+        ref: 'town-or-city'
+      }
+      errorFlag = true
+    }
+
+    if (payment.postCode === '') {
+      errors.postCode = {
+        type: 'blank',
+        msg: 'A postcode is required',
+        ref: 'postcode'
+      }
+      errorFlag = true
+    }
+
+    if (payment.emailAddress === '') {
+      errors.emailAddress = {
+        type: 'blank',
+        msg: 'An email address is required',
+        ref: 'email-address'
+      }
+      errorFlag = true
+    }
+
+    // CHECK ERROR FLAG
+    if (errorFlag === true) {
+      res.render('CH/gov-pay-1', {
+        errors: errors,
+        scenario: scenario,
+        payment: payment
+      })
+    } else {
       req.session.payment = payment
       res.redirect('gov-pay-2')
-    } else {
-      res.redirect('/CH/enter-details')
     }
   })
 
