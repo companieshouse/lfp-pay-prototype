@@ -97,9 +97,34 @@
             </div>
           {% endif %}
         {% endfor %}
-        <p>
-          <a class="button" href="view-penalties" role="button">Back to penalties</a>
-        </p>
+        <details>
+          <summary>
+            <span class="summary">More about fees</span>
+          </summary>
+          <div class="panel panel-border-narrow">
+            <h3 class="heading-small">Late filing penalty</h3>
+            <p>
+              The fixed penalty amount due for late filing company accounts.
+            </p>
+            <h3 class="heading-small">Solicitor fee</h3>
+            <p>
+              The fee incurred as a result of your case being referred to a solicitor.
+            </p>
+            <h3 class="heading-small">Court fee</h3>
+            <p>
+              The fee charged by the court for processing your case.
+            </p>
+            <h3 class="heading-small">Hearing fee</h3>
+            <p>
+              The fee charged by the court for hearing your case.
+            </p>
+          </div>
+        </details>
+        <div class="button-margin">
+          <p>
+            <a class="button" href="view-penalties" role="button">Back to penalties</a>
+          </p>
+        </div>
       </div>
     </div>
   </main>
