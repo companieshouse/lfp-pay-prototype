@@ -6,28 +6,27 @@
 
 {% block content %}
 
-<main id="content" role="main">
+  <main id="content" role="main">
 
-  {% block phase_banner %}
-    {% include "includes/phase_banner_alpha.html" %}
-  {% endblock %}
+    {% block phase_banner %}
+      {% include "includes/phase_banner_alpha.html" %}
+    {% endblock %}
 
-  <div class="grid-row">
-    <div class="column-two-thirds">
-      <p>
-        <a href="view-penalties" class="link-back">Back</a>
-      </p>
-      <h1 class="heading-xlarge">
-        Penalty details
-      </h1>
+    <div class="grid-row">
+      <div class="column-two-thirds">
+        <p>
+          <a href="view-penalties" class="link-back">Back</a>
+        </p>
+        <h1 class="heading-xlarge">
+          Penalty details
+        </h1>
 
-
-      {% for penalty in scenario.penalties %}
-        {% if penalty.pen1 === pen1 or penalty.pen2 === pen2 %}
-          <div>
-            <table>
-              <tbody>
-                <!--<tr>
+        {% for penalty in scenario.penalties %}
+          {% if penalty.pen1 === pen1 or penalty.pen2 === pen2 %}
+            <div>
+              <table>
+                <tbody>
+                  <!--<tr>
                   <th>Company</th>
                   <td>{{ scenario.company.name }}</td>
                 </tr>
@@ -35,75 +34,99 @@
                   <th>Company number</th>
                   <td>{{ scenario.company.number }}</td>
                 </tr>-->
-                <tr>
-                  <th>Accounts period</th>
-                  <td>{{ penalty.periodStart }} to {{ penalty.periodEnd }}</td>
-                </tr>
-              </tbody>
-            </table>
+                  <tr>
+                    <th>Accounts period</th>
+                    <td>{{ penalty.periodStart }}
+                      to
+                      {{ penalty.periodEnd }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="display: block;">
+              <h2 class="heading-medium">
+                Summary of fees
+              </h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Fee</th>
+                    <th>Date</th>
+                    <th class="table-total">Fee Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Late filing penalty</td>
+                    <td>{{ penalty.filed }}</td>
+                    <td class="table-total">£{{ penalty.value }}</td>
+                  </tr>
+                  {% if penalty.fees.solicitor %}
+                    {% for solicitor in penalty.fees.solicitor %}
+                      <tr>
+                        <td>
+                          {{ solicitor.name }}
+                        </td>
+                        <td>
+                          {{ solicitor.date }}
+                        </td>
+                        <td class="table-total">£{{ solicitor.value }}</td>
+                      </tr>
+                    {% endfor %}
+                  {% endif %}
+                  {% if penalty.fees.court %}
+                    {% for court in penalty.fees.court %}
+                      <tr>
+                        <td>
+                          {{ court.name }}
+                        </td>
+                        <td>
+                          {{ court.date }}
+                        </td>
+                        <td class="table-total">£{{ court.value }}</td>
+                      </tr>
+                    {% endfor %}
+                  {% endif %}
+                  <tr>
+                    <td colspan="3" class="table-total">
+                      Total: £{{ penalty.value + penalty.totalFees }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          {% endif %}
+        {% endfor %}
+        <details>
+          <summary>
+            <span class="summary">More about fees</span>
+          </summary>
+          <div class="panel panel-border-narrow">
+            <h3 class="heading-small">Late filing penalty</h3>
+            <p>
+              The fixed penalty amount due for late filing company accounts.
+            </p>
+            <h3 class="heading-small">Solicitor fee</h3>
+            <p>
+              The fee incurred as a result of your case being referred to a solicitor.
+            </p>
+            <h3 class="heading-small">Court fee</h3>
+            <p>
+              The fee charged by the court for processing your case.
+            </p>
+            <h3 class="heading-small">Hearing fee</h3>
+            <p>
+              The fee charged by the court for hearing your case.
+            </p>
           </div>
-          <div style="display: block;">
-            <h2 class="heading-medium">
-              Summary of fees
-            </h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Fee</th>
-                  <th>Date</th>
-                  <th>Fee Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Late filing penalty</td>
-                  <td>{{ penalty.filed }}</td>
-                  <td>£{{ penalty.value }}</td>
-                </tr>
-                {% if penalty.fees.solicitor %}
-                  {% for solicitor in penalty.fees.solicitor %}
-                    <tr>
-                      <td>
-                        {{ solicitor.name }}
-                      </td>
-                      <td>
-                        {{ solicitor.date }}
-                      </td>
-                      <td>£{{ solicitor.value }}</td>
-                    </tr>
-                  {% endfor %}
-                {% endif %}
-                {% if penalty.fees.court %}
-                  {% for court in penalty.fees.court %}
-                    <tr>
-                      <td>
-                        {{ court.name }}
-                      </td>
-                      <td>
-                        {{ court.date }}
-                      </td>
-                      <td>£{{ court.value }}</td>
-                    </tr>
-                  {% endfor %}
-                {% endif %}
-                <tr>
-                  <td colspan="2" class="table-total">
-                    Total:
-                  </td>
-                  <td>
-                    £{{ penalty.value + penalty.totalFees }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        {% endif %}
-      {% endfor %}
-      <p>
-        <a class="button" href="view-penalties" role="button">Back to penalties</a>
-      </p>
+        </details>
+        <div class="button-margin">
+          <p>
+            <a class="button" href="view-penalties" role="button">Back to penalties</a>
+          </p>
+        </div>
+      </div>
     </div>
-  </div>
-</main>
+  </main>
 
 {% endblock %}
