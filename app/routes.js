@@ -153,6 +153,7 @@ router.post('/enter-details', function (req, res) {
   var companyErr = {}
   var errorFlag = false
   var scenario = {}
+  var penaltyConv = penalty.toUpperCase()
 
   // VALIDATE USER INPUTS
   if (companyno.length < 8) {
@@ -162,13 +163,13 @@ router.post('/enter-details', function (req, res) {
     errorFlag = true
   }
   if (
-    penalty !== 'PEN1A/12345677' &&
-    penalty !== 'PEN2A/12345677' &&
-    penalty !== 'PEN1A/12345678' &&
-    penalty !== 'PEN2A/12345678' &&
-    penalty !== 'PEN1A/12345679' &&
-    penalty !== 'PEN2A/12345679' &&
-    penalty !== 'PEN1A/12345670'
+    penaltyConv !== 'PEN1A/12345677' &&
+    penaltyConv !== 'PEN2A/12345677' &&
+    penaltyConv !== 'PEN1A/12345678' &&
+    penaltyConv !== 'PEN2A/12345678' &&
+    penaltyConv !== 'PEN1A/12345679' &&
+    penaltyConv !== 'PEN2A/12345679' &&
+    penaltyConv !== 'PEN1A/12345670'
    ) {
     penaltyErr.type = 'invalid'
     penaltyErr.msg = 'Enter your penalty reference exactly as shown on your penalty letter'
@@ -191,7 +192,7 @@ router.post('/enter-details', function (req, res) {
       companyno: companyno
     })
   } else {
-    if (penalty === 'PEN1A/12345677' || penalty === 'PEN2A/12345677') {
+    if (penaltyConv === 'PEN1A/12345677' || penaltyConv === 'PEN2A/12345677') {
       // SINGLE PENALTY WITH FEES
       scenario.entryRef = penalty
       scenario.company = {
@@ -244,7 +245,7 @@ router.post('/enter-details', function (req, res) {
 
       req.session.scenario = scenario
       res.redirect('/view-penalties')
-    } else if (penalty === 'PEN1A/12345678' || penalty === 'PEN2A/12345678' || penalty === 'PEN1A/123456789' || penalty === 'PEN2A/123456789' || penalty === 'PEN1A/123456780') {
+    } else if (penaltyConv === 'PEN1A/12345678' || penaltyConv === 'PEN2A/12345678' || penaltyConv === 'PEN1A/123456789' || penaltyConv === 'PEN2A/123456789' || penaltyConv === 'PEN1A/123456780') {
       // MULTIPLE PENALTIES
       scenario.entryRef = penalty
       scenario.company = {
