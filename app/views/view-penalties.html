@@ -40,13 +40,9 @@
 
           <p class="lede">
             {% if scenario.penalties | length > 1 %}
-              There are outstanding penalties for
+              There are
               {{ scenario.penalties | length }}
-              accounts periods
-            {% else %}
-              There is an outstanding penalty for
-              {{ scenario.penalties | length }}
-              accounts period
+              outstanding penalties
             {% endif %}
           </p>
         </div>
@@ -87,8 +83,7 @@
           <div>
             {% for penalty in scenario.penalties %}
               <h2 class="heading-medium">
-                {{ penalty.periodStart }}
-                to
+                Accounts period ending on
                 {{ penalty.periodEnd }}
               </h2>
               <table>
