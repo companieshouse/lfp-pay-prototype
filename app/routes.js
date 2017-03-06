@@ -206,7 +206,7 @@ router.post('/gov-pay-1', function (req, res) {
   var errors = {}
   var errorFlag = false
 
-  payment.cardNumber = req.body.cardNumber
+  payment.cardNumber = req.body.cardNumber.replace(/\s+/g, '')
   payment.expMonth = req.body.expMonth
   payment.expYear = req.body.expYear
   payment.fullName = req.body.fullName
@@ -348,7 +348,7 @@ router.get('/complete', function (req, res) {
 
       client.sendEmailWithTemplate({
         'From': 'owilliams@companieshouse.gov.uk',
-        'To': payment.emailAddress,
+        'To': 'test.user.lfp@gmail.com',
         'TemplateId': process.env.ETID_CONFIRMATION,
         'TemplateModel': {
           'scenario': scenario,
