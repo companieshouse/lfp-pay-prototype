@@ -9,7 +9,7 @@
 <main id="content" role="main">
 
   {% block phase_banner %}
-    {% include "includes/phase_banner_beta.html" %}
+    {% include "includes/phase_banner_alpha.html" %}
   {% endblock %}
 
 	<div class="grid-row">
@@ -113,6 +113,9 @@
                 {{ errors.fullName.msg }}
               </span>
             {% endif %}
+            <span class="form-hint">
+              Enter the name as it appears on the card
+            </span>
           </label>
 			  	<input class="form-control" id="full-name" name="fullName" type="text" value="{{ payment.fullName }}">
 		    </div>
@@ -131,7 +134,7 @@
 	      <div class="form-group">
   		    <h2 class="heading-medium">Billing address</h2>
   		    <div class="payment-type-intro">
-  	  		  <p>This is the address associated with the card</p>
+  	  		  <p>This is the address where the card is registered</p>
   	  		</div>
 	      	<fieldset>
     				<div class="form-group {% if errors.buildingStreet %}error{% endif %}">
@@ -199,7 +202,7 @@
   			<h2>Payment summary</h2>
   		  <p class="payment-info">Late filing penalty</p>
   		  <h3>Amount to pay:</h3>
-  		  <p class="payment-amount">£{{ paymentAmount}}</p>
+  		  <p class="payment-amount">£{{ totalDue }}</p>
   		</div>
   	</div>
   </div>

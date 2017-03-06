@@ -1,0 +1,119 @@
+{% extends "layout.html" %}
+
+{% block page_title %}
+  Pay your late filing penalty
+{% endblock %}
+
+{% block content %}
+
+  <main id="content" role="main">
+
+    {% block phase_banner %}
+      {% include "includes/phase_banner_alpha.html" %}
+    {% endblock %}
+
+    <div class="breadcrumbs">
+      <ol>
+        <li>
+          <a href="http://www.gov.uk">Home</a>
+        </li>
+        <li>
+          <a href="">Companies House</a>
+        </li>
+        <li>Pay your late filing penalty</li>
+      </ol>
+    </div>
+
+    <div class="grid-row">
+      <div class="column-two-thirds">
+        <h1 class="heading-xlarge">
+          Pay your Companies House late filing penalty
+        </h1>
+        <p class="lede">
+          You can use this service to pay a company's late filing penalty with a credit or debit card.
+        </p>
+        <div class="form-class table-spacing">
+          <p>You'll need:</p>
+          <ul class="list list-bullet table-spacing">
+            <li>your company number</li>
+            <li>the penalty reference shown on your penalty notification</li>
+            <li>a credit or debit card</li>
+          </ul>
+        </div>
+        <p>
+          <a class="button button-start" href="enter-details" role="button">Start now</a>
+        </p>
+        <details>
+          <summary>
+            <span class="summary">Other ways to pay your penalty</span>
+          </summary>
+          <div class="panel panel-border-narrow">
+            <h4 class="heading-medium">By phone</h4>
+            <p>
+              You can pay by phone using your credit or debit card.<br/>
+              Telephone: 0303 1234 500<br/>
+              Paying your penalty through instalments can also be set up by phone.
+            </p>
+            <h4 class="heading-medium">Cheque</h4>
+            <p>
+              Send your cheque, along with the remittance advice on the bottom of your letter to:<br/>
+              <br/>
+              <span class="heading-small">England Wales and Northern Ireland:</span><br/>
+              Companies House<br/>
+              PO Box 710<br/>
+              Crown Way<br/>
+              CF14 3UZ<br>
+              <br/>
+              <span class="heading-small">Scotland:</span><br>
+              Companies House<br/>
+              Fourth Floor<br/>
+              Edinburgh Quay 2<br/>
+              139 Fountainbridge<br/>
+              Edinburgh<br/>
+              EH3 9FF<br/>
+            </p>
+            <h4 class="heading-medium">BACS</h4>
+            <p>
+              Quote your company number followed by the full company name in your transaction reference so we can allocate your payment properly.
+            </p>
+            <table>
+              <tbody>
+                <tr>
+                  <th class="gov-pay-table-td">Account name:</th>
+                  <td class="gov-pay-table-td">Late Filing Penalties Receipts</td>
+                </tr>
+                <tr>
+                  <th class="gov-pay-table-td">Account number:</th>
+                  <td class="gov-pay-table-td">41005309</td>
+                </tr>
+                <tr>
+                  <th class="gov-pay-table-td">Bank / Branch</th>
+                  <td class="gov-pay-table-td">
+                    National Westminster Bank<br/>
+                    Roath, Cardiff
+                  </td>
+                </tr>
+                <tr>
+                  <th class="gov-pay-table-td">Sort code:</th>
+                  <td class="gov-pay-table-td">52 21 07</td>
+                </tr>
+                <tr>
+                  <th class="gov-pay-table-td">Swift code:</th>
+                  <td class="gov-pay-table-td">NW BK GB 2122X</td>
+                </tr>
+                <tr>
+                  <th class="gov-pay-table-td">IBAN (If overseas):</th>
+                  <td class="gov-pay-table-td">GB34NWBK52210741005309</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              Email confirmation of your BACS payment to LFPFinance@companieshouse.gov.uk with details of the amount paid, company number and company name.
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </main>
+
+{% endblock %}
