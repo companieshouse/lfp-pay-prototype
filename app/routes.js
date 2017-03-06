@@ -153,6 +153,7 @@ router.post('/enter-details', function (req, res) {
   var companyErr = {}
   var errorFlag = false
   var scenario = {}
+  var penaltyConv = penalty.toUpperCase()
 
   // VALIDATE USER INPUTS
   if (companyno.length < 8) {
@@ -162,13 +163,16 @@ router.post('/enter-details', function (req, res) {
     errorFlag = true
   }
   if (
-    penalty !== 'PEN1A/12345677' &&
-    penalty !== 'PEN2A/12345677' &&
-    penalty !== 'PEN1A/12345678' &&
-    penalty !== 'PEN2A/12345678' &&
-    penalty !== 'PEN1A/12345679' &&
-    penalty !== 'PEN2A/12345679' &&
-    penalty !== 'PEN1A/12345670'
+    penaltyConv !== 'PEN1A/12345677' &&
+    penaltyConv !== 'PEN2A/12345677' &&
+    penaltyConv !== 'PEN1A/12345678' &&
+    penaltyConv !== 'PEN2A/12345678' &&
+    penaltyConv !== 'PEN1A/12345679' &&
+    penaltyConv !== 'PEN2A/12345679' &&
+    penaltyConv !== 'PEN1A/12345670' &&
+    penaltyConv !== 'PEN1A/12345671' &&
+    penaltyConv !== 'PEN2A/12345671' &&
+    penaltyConv !== 'PEN1A/12345672'
    ) {
     penaltyErr.type = 'invalid'
     penaltyErr.msg = 'Enter your penalty reference exactly as shown on your penalty letter'
@@ -191,7 +195,7 @@ router.post('/enter-details', function (req, res) {
       companyno: companyno
     })
   } else {
-    if (penalty === 'PEN1A/12345677' || penalty === 'PEN2A/12345677') {
+    if (penaltyConv === 'PEN1A/12345677' || penaltyConv === 'PEN2A/12345677') {
       // SINGLE PENALTY WITH FEES
       scenario.entryRef = penalty
       scenario.company = {
@@ -244,7 +248,78 @@ router.post('/enter-details', function (req, res) {
 
       req.session.scenario = scenario
       res.redirect('/view-penalties')
-    } else if (penalty === 'PEN1A/12345678' || penalty === 'PEN2A/12345678' || penalty === 'PEN1A/123456789' || penalty === 'PEN2A/123456789' || penalty === 'PEN1A/123456780') {
+    } else if (penaltyConv === 'PEN1A/12345671' || penaltyConv === 'PEN2A/12345671' || penaltyConv === 'PEN1A/12345672') {
+      // MULTIPLE PENALTIES
+      scenario.entryRef = penalty
+      scenario.company = {
+        name: 'BATTERSEA POWER LIMITED',
+        number: companyno
+      }
+      scenario.penalties = [
+        {
+          pen1: 'PEN1A/12345671',
+          pen2: 'PEN2A/12345671',
+          periodStart: '1 May 2014',
+          periodEnd: '30 April 2015',
+          due: '1 January 2016',
+          filed: '15 January 2016',
+          overdue: '14 days',
+          band: 'Up to 1 month overdue',
+          value: 150,
+          fees: {
+            solicitor: [
+              {
+                name: 'Solicitor fee',
+                date: '23 April 2016',
+                value: 50.00
+              }
+            ],
+            court: [
+              {
+                name: 'Court fee',
+                date: '23 April 2016',
+                value: 25.00
+              },
+              {
+                name: 'Hearing fee',
+                date: '23 April 2016',
+                value: 22.00
+              }
+            ]
+          },
+          totalFees: 0
+        },
+        {
+          pen1: 'PEN1A/12345672',
+          pen2: '',
+          periodStart: '1 May 2015',
+          periodEnd: '30 April 2016',
+          due: '1 January 2017',
+          filed: '15 January 2017',
+          overdue: '14 days',
+          band: 'Up to 1 month overdue',
+          value: 300,
+          fees: {},
+          totalFees: 0
+        }
+      ]
+
+      for (i = 0; i < scenario.penalties.length; i++) {
+        if (scenario.penalties[i].fees.solicitor) {
+          for (var j = 0; j < scenario.penalties[i].fees.solicitor.length; j++) {
+            scenario.penalties[i].totalFees += scenario.penalties[i].fees.solicitor[j].value
+          }
+        }
+        if (scenario.penalties[i].fees.court) {
+          for (var k = 0; k < scenario.penalties[i].fees.court.length; k++) {
+            scenario.penalties[i].totalFees += scenario.penalties[i].fees.court[k].value
+          }
+        }
+      }
+
+      req.session.scenario = scenario
+      res.redirect('/view-penalties')
+    } else if (penaltyConv === 'PEN1A/12345678' || penaltyConv === 'PEN2A/12345678' || penaltyConv === 'PEN1A/12345679' || penaltyConv === 'PEN2A/12345679' || penaltyConv === 'PEN1A/12345670') {
       // MULTIPLE PENALTIES
       scenario.entryRef = penalty
       scenario.company = {
