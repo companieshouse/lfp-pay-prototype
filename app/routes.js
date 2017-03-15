@@ -166,6 +166,7 @@ router.post('/enter-details', function (req, res) {
 // View details of a single penalty
 router.get('/view-penalties', function (req, res) {
   var scenario = req.session.scenario
+  var entryRef = scenario.entryRef.toUpperCase()
   var totalDue = 0
 
   if (scenario != null) {
@@ -176,7 +177,8 @@ router.get('/view-penalties', function (req, res) {
     req.session.totalDue = totalDue
     res.render('view-penalties', {
       scenario: scenario,
-      totalDue: totalDue
+      totalDue: totalDue,
+      entryRef: entryRef
     })
   } else {
     res.redirect('/enter-details')
