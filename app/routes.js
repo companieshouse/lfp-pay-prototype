@@ -1,142 +1,15 @@
 var express = require('express')
 var router = express.Router()
-var penaltyGroups = [
-  [
-    {
-      pen1: 'PEN1A/12345677',
-      pen2: 'PEN2A/12345677',
-      periodStart: '1 May 2014',
-      periodEnd: '30 April 2015',
-      due: '1 January 2016',
-      filed: '15 January 2016',
-      overdue: '14 days',
-      band: 'Up to 1 month overdue',
-      value: 150,
-      fees: {
-        solicitor: [
-          {
-            name: 'Solicitor fee',
-            date: '9 April 2016',
-            value: 50.00
-          }
-        ],
-        court: [
-          {
-            name: 'Court fee',
-            date: '23 April 2016',
-            value: 25.00
-          },
-          {
-            name: 'Hearing fee',
-            date: '23 April 2016',
-            value: 22.00
-          }
-        ]
-      },
-      totalFees: 0
-    }
-  ],
-  [
-    {
-      pen1: 'PEN1A/12345678',
-      pen2: 'PEN2A/12345678',
-      periodStart: '1 May 2013',
-      periodEnd: '30 April 2014',
-      due: '1 January 2015',
-      filed: '15 January 2015',
-      overdue: '14 days',
-      band: 'Up to 1 month overdue',
-      value: 150,
-      fees: {
-        solicitor: [
-          {
-            name: 'Solicitor fee',
-            date: '23 April 2015',
-            value: 50.00
-          }
-        ],
-        court: [
-          {
-            name: 'Court fee',
-            date: '23 April 2015',
-            value: 25.00
-          },
-          {
-            name: 'Hearing fee',
-            date: '23 April 2015',
-            value: 22.00
-          }
-        ]
-      },
-      totalFees: 0
-    },
-    {
-      pen1: 'PEN1A/12345679',
-      pen2: 'PEN2A/12345679',
-      periodStart: '1 May 2014',
-      periodEnd: '30 April 2015',
-      due: '1 January 2016',
-      filed: '15 January 2016',
-      overdue: '14 days',
-      band: 'Up to 1 month overdue',
-      value: 300,
-      fees: {
-        solicitor: [
-          {
-            name: 'Solicitor fee',
-            date: '23 April 2016',
-            value: 50.00
-          }
-        ],
-        court: [
-          {
-            name: 'Court fee',
-            date: '23 April 2016',
-            value: 25.00
-          },
-          {
-            name: 'Hearing fee',
-            date: '23 April 2016',
-            value: 22.00
-          }
-        ]
-      },
-      totalFees: 0
-    },
-    {
-      pen1: 'PEN1A/12345670',
-      pen2: 'PEN2A/12345670',
-      periodStart: '1 May 2015',
-      periodEnd: '30 April 2016',
-      due: '1 January 2017',
-      filed: '15 January 2017',
-      overdue: '14 days',
-      band: 'Up to 1 month overdue',
-      value: 300,
-      fees: {},
-      totalFees: 0
-    }
-  ]
-]
 
 // Route index page
 router.get('/', function (req, res) {
   req.session.destroy()
-  res.render('index')
-})
-
-router.post('/', function (req, res) {
-  if (req.body.version) {
-    req.session.version = req.body.version
-    res.redirect('/start')
-  } else {
-    res.render('index')
-  }
+  res.render('start')
 })
 
 // Start page
 router.get('/start', function (req, res) {
-  // req.session.destroy()
+  req.session.destroy()
   res.render('start')
 })
 
@@ -153,6 +26,7 @@ router.post('/enter-details', function (req, res) {
   var companyErr = {}
   var errorFlag = false
   var scenario = {}
+  var penaltyConv = penalty.toUpperCase()
 
   // VALIDATE USER INPUTS
   if (companyno.length < 8) {
@@ -162,13 +36,11 @@ router.post('/enter-details', function (req, res) {
     errorFlag = true
   }
   if (
-    penalty !== 'PEN1A/12345677' &&
-    penalty !== 'PEN2A/12345677' &&
-    penalty !== 'PEN1A/12345678' &&
-    penalty !== 'PEN2A/12345678' &&
-    penalty !== 'PEN1A/12345679' &&
-    penalty !== 'PEN2A/12345679' &&
-    penalty !== 'PEN1A/12345670'
+    penaltyConv !== 'PEN1A/12345677' &&
+    penaltyConv !== 'PEN2A/12345677' &&
+    penaltyConv !== 'PEN1A/12345671' &&
+    penaltyConv !== 'PEN2A/12345671' &&
+    penaltyConv !== 'PEN1A/12345672'
    ) {
     penaltyErr.type = 'invalid'
     penaltyErr.msg = 'Enter your penalty reference exactly as shown on your penalty letter'
@@ -191,7 +63,7 @@ router.post('/enter-details', function (req, res) {
       companyno: companyno
     })
   } else {
-    if (penalty === 'PEN1A/12345677' || penalty === 'PEN2A/12345677') {
+    if (penaltyConv === 'PEN1A/12345677' || penaltyConv === 'PEN2A/12345677') {
       // SINGLE PENALTY WITH FEES
       scenario.entryRef = penalty
       scenario.company = {
@@ -202,49 +74,21 @@ router.post('/enter-details', function (req, res) {
         {
           pen1: 'PEN1A/12345677',
           pen2: 'PEN2A/12345677',
-          periodStart: '1 May 2014',
-          periodEnd: '30 April 2015',
-          due: '1 January 2016',
-          filed: '15 January 2016',
+          periodStart: '1 May 2015',
+          periodEnd: '30 April 2016',
+          due: '1 January 2017',
+          filed: '15 January 2017',
           overdue: '14 days',
           band: 'Up to 1 month overdue',
           value: 150,
-          fees: {
-            solicitor: [
-              {
-                name: 'Solicitor fee',
-                date: '9 April 2016',
-                value: 50.00
-              }
-            ],
-            court: [
-              {
-                name: 'Court fee',
-                date: '23 April 2016',
-                value: 25.00
-              },
-              {
-                name: 'Hearing fee',
-                date: '23 April 2016',
-                value: 22.00
-              }
-            ]
-          },
+          fees: {},
           totalFees: 0
         }
       ]
 
-      for (i = 0; i < scenario.penalties[0].fees.solicitor.length; i++) {
-        scenario.penalties[0].totalFees += scenario.penalties[0].fees.solicitor[i].value
-      }
-
-      for (i = 0; i < scenario.penalties[0].fees.court.length; i++) {
-        scenario.penalties[0].totalFees += scenario.penalties[0].fees.court[i].value
-      }
-
       req.session.scenario = scenario
       res.redirect('/view-penalties')
-    } else if (penalty === 'PEN1A/12345678' || penalty === 'PEN2A/12345678' || penalty === 'PEN1A/123456789' || penalty === 'PEN2A/123456789' || penalty === 'PEN1A/123456780') {
+    } else if (penaltyConv === 'PEN1A/12345671' || penaltyConv === 'PEN2A/12345671' || penaltyConv === 'PEN1A/12345672') {
       // MULTIPLE PENALTIES
       scenario.entryRef = penalty
       scenario.company = {
@@ -253,12 +97,12 @@ router.post('/enter-details', function (req, res) {
       }
       scenario.penalties = [
         {
-          pen1: 'PEN1A/12345678',
-          pen2: 'PEN2A/12345678',
-          periodStart: '1 May 2013',
-          periodEnd: '30 April 2014',
-          due: '1 January 2015',
-          filed: '15 January 2015',
+          pen1: 'PEN1A/12345671',
+          pen2: 'PEN2A/12345671',
+          periodStart: '1 May 2014',
+          periodEnd: '30 April 2015',
+          due: '1 January 2016',
+          filed: '15 January 2016',
           overdue: '14 days',
           band: 'Up to 1 month overdue',
           value: 150,
@@ -266,39 +110,6 @@ router.post('/enter-details', function (req, res) {
             solicitor: [
               {
                 name: 'Solicitor fee',
-                date: '23 April 2015',
-                value: 50.00
-              }
-            ],
-            court: [
-              {
-                name: 'Court fee',
-                date: '23 April 2015',
-                value: 25.00
-              },
-              {
-                name: 'Hearing fee',
-                date: '23 April 2015',
-                value: 22.00
-              }
-            ]
-          },
-          totalFees: 0
-        },
-        {
-          pen1: 'PEN1A/12345679',
-          pen2: 'PEN2A/12345679',
-          periodStart: '1 May 2014',
-          periodEnd: '30 April 2015',
-          due: '1 January 2016',
-          filed: '15 January 2016',
-          overdue: '14 days',
-          band: 'Up to 1 month overdue',
-          value: 300,
-          fees: {
-            solicitor: [
-              {
-                name: 'Solicitor fee',
                 date: '23 April 2016',
                 value: 50.00
               }
@@ -319,7 +130,7 @@ router.post('/enter-details', function (req, res) {
           totalFees: 0
         },
         {
-          pen1: 'PEN1A/12345670',
+          pen1: 'PEN1A/12345672',
           pen2: '',
           periodStart: '1 May 2015',
           periodEnd: '30 April 2016',
@@ -355,7 +166,6 @@ router.post('/enter-details', function (req, res) {
 // View details of a single penalty
 router.get('/view-penalties', function (req, res) {
   var scenario = req.session.scenario
-  var version = req.session.version
   var totalDue = 0
 
   if (scenario != null) {
@@ -366,25 +176,7 @@ router.get('/view-penalties', function (req, res) {
     req.session.totalDue = totalDue
     res.render('view-penalties', {
       scenario: scenario,
-      version: version,
       totalDue: totalDue
-    })
-  } else {
-    res.redirect('/enter-details')
-  }
-})
-
-// View details of a single penalty
-router.get('/view-penalty', function (req, res) {
-  var scenario = req.session.scenario
-  var pen1 = req.query.pen1
-  var pen2 = req.query.pen2
-
-  if (scenario != null) {
-    res.render('view-penalty', {
-      scenario: scenario,
-      pen1: pen1,
-      pen2: pen2
     })
   } else {
     res.redirect('/enter-details')
@@ -414,7 +206,7 @@ router.post('/gov-pay-1', function (req, res) {
   var errors = {}
   var errorFlag = false
 
-  payment.cardNumber = req.body.cardNumber
+  payment.cardNumber = req.body.cardNumber.replace(/\s+/g, '')
   payment.expMonth = req.body.expMonth
   payment.expYear = req.body.expYear
   payment.fullName = req.body.fullName
@@ -556,7 +348,7 @@ router.get('/complete', function (req, res) {
 
       client.sendEmailWithTemplate({
         'From': 'owilliams@companieshouse.gov.uk',
-        'To': payment.emailAddress,
+        'To': 'test.user.lfp@gmail.com',
         'TemplateId': process.env.ETID_CONFIRMATION,
         'TemplateModel': {
           'scenario': scenario,

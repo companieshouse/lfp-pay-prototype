@@ -40,113 +40,72 @@
 
           <p class="lede">
             {% if scenario.penalties | length > 1 %}
-              There are outstanding penalties for
+              There are
               {{ scenario.penalties | length }}
-              accounts periods
-            {% else %}
-              There is an outstanding penalty for
-              {{ scenario.penalties | length }}
-              accounts period
+              outstanding penalties
             {% endif %}
           </p>
         </div>
-
-        {% if version === 'concise' %}
-          <div>
+        <div>
+          {% for penalty in scenario.penalties %}
+            <h2 class="heading-medium">
+              Accounts period made up to
+              {{ penalty.periodEnd }}
+            </h2>
             <table>
               <thead>
                 <tr>
-                  <th>Accounts period</th>
-                  <th>Penalty amount</th>
-                  <th></th>
+                  <th>Fee</th>
+                  <th>Date</th>
+                  <th>Fee Amount</th>
                 </tr>
               </thead>
               <tbody>
-                {% for penalty in scenario.penalties %}
-                  <tr>
-                    <td>{{ penalty.periodStart }}
-                      to
-                      {{ penalty.periodEnd }}</td>
-                    <td>
-                      {% if penalty.totalFees > 0 %}
-                        £{{ penalty.value + penalty.totalFees }}
-                        (Includes fees)
-                      {% else %}
-                        £{{ penalty.value }}
-                      {% endif %}
-                    </td>
-                    <td>
-                      <a href="view-penalty?pen1={{ penalty.pen1 }}&pen2={{ penalty.pen2 }}" class="link">View details</a>
-                    </td>
-                  </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        {% else %}
-          <div>
-            {% for penalty in scenario.penalties %}
-              <h2 class="heading-medium">
-                {{ penalty.periodStart }}
-                to
-                {{ penalty.periodEnd }}
-              </h2>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Fee</th>
-                    <th>Date</th>
-                    <th>Fee Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Late filing penalty</td>
-                    <td>{{ penalty.filed }}</td>
-                    <td>£{{ penalty.value }}</td>
-                  </tr>
-                  {% if penalty.fees.solicitor %}
-                    {% for solicitor in penalty.fees.solicitor %}
-                      <tr>
-                        <td>
-                          {{ solicitor.name }}
-                        </td>
-                        <td>
-                          {{ solicitor.date }}
-                        </td>
-                        <td>£{{ solicitor.value }}</td>
-                      </tr>
-                    {% endfor %}
-                  {% endif %}
-                  {% if penalty.fees.court %}
-                    {% for court in penalty.fees.court %}
-                      <tr>
-                        <td>
-                          {{ court.name }}
-                        </td>
-                        <td>
-                          {{ court.date }}
-                        </td>
-                        <td>£{{ court.value }}</td>
-                      </tr>
-                    {% endfor %}
-                  {% endif %}
-                  {% if scenario.entryRef !== 'PEN2A/12345678' %}
+                <tr>
+                  <td>Late filing penalty</td>
+                  <td>{{ penalty.filed }}</td>
+                  <td>£{{ penalty.value }}</td>
+                </tr>
+                {% if penalty.fees.solicitor %}
+                  {% for solicitor in penalty.fees.solicitor %}
                     <tr>
-                      <td colspan="2" class="table-total">
-                        Total:
+                      <td>
+                        {{ solicitor.name }}
                       </td>
                       <td>
-                        £{{ penalty.value + penalty.totalFees }}
+                        {{ solicitor.date }}
                       </td>
+                      <td>£{{ solicitor.value }}</td>
                     </tr>
-                  {% endif %}
-                </tbody>
-              </table>
-            {% endfor %}
-          </div>
-        {% endif %}
-
+                  {% endfor %}
+                {% endif %}
+                {% if penalty.fees.court %}
+                  {% for court in penalty.fees.court %}
+                    <tr>
+                      <td>
+                        {{ court.name }}
+                      </td>
+                      <td>
+                        {{ court.date }}
+                      </td>
+                      <td>£{{ court.value }}</td>
+                    </tr>
+                  {% endfor %}
+                {% endif %}
+                {% if scenario.entryRef !== 'PEN2A/12345678' %}
+                  <tr>
+                    <td colspan="2" class="table-total">
+                      Total:
+                    </td>
+                    <td>
+                      £{{ penalty.value + penalty.totalFees }}
+                    </td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          {% endfor %}
+        </div>
         <p class="bold-medium">
           Total amount due: £{{ totalDue }}
         </p>
