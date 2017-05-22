@@ -12,15 +12,8 @@
       {% include "includes/phase_banner_alpha.html" %}
     {% endblock %}
 
-    <!--<div class="breadcrumbs">
-    <a href="start" class="link-back">Back</a>
-  </div>-->
-
     <div class="grid-row">
       <div class="column-two-thirds">
-        <h1 class="heading-xlarge">
-          Enter your penalty details
-        </h1>
         {% if penaltyErr or companyErr %}
           <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
             <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
@@ -29,7 +22,7 @@
             <p>
               You must provide a company number and penalty reference to pay a late filing penalty.
             </p>
-            <ul class="error-summary-list">
+            <ol class="error-summary-list">
               {% if companyErr.type %}
                 <li>
                   <a href="#company-number">{{ companyErr.msg }}</a>
@@ -40,9 +33,12 @@
                   <a href="#penalty-ref">{{ penaltyErr.msg }}</a>
                 </li>
               {% endif %}
-            </ul>
+            </ol>
           </div>
         {% endif %}
+        <h1 class="heading-xlarge">
+          Enter your penalty details
+        </h1>
         <form class="form" method="POST" action="enter-details">
           <div class="form-group {% if companyErr.type %} error{% endif %}">
             <label class="form-label-bold" for="company-number">
@@ -56,7 +52,7 @@
                 This is the 8 character reference that uniquely identifies your company.
               </span>
             </label>
-            <input class="form-control" id="company-number" type="number" pattern="[0-9]*" min="0" max="99999999" name="companyno" value="{{ companyno }}">
+            <input class="form-control" id="company-number" type="text" name="companyno" value="{{ companyno }}">
           </div>
           <div class="form-group {% if penaltyErr.type %} error{% endif %}">
             <label class="form-label-bold" for="penalty-ref">
@@ -81,7 +77,7 @@
                 <p>
                   Your company number and penalty reference are shown in a box on the right side of the penalty notification.
                 </p>
-                <img src="/public/images/PenWebImage280px.png" class="call-out-image"/>
+                <img src="/public/images/PenWebImage280px.png" class="call-out-image" alt=""/>
               </div>
             </details>
           </div>
