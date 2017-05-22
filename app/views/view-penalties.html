@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
+
 {% block page_title %}
   Pay your late filing penalty
 {% endblock %}
+
 {% block content %}
 
   <main id="content" role="main">
@@ -16,50 +18,26 @@
           Late filing penalties for
           {{ scenario.company.name }}
         </h1>
-        <div>
-          <!--<table>
-          <tbody>
-            <tr>
-              <th>Penalty reference</th>
-              <td>{{ scenario.entryRef }}</td>
-            </tr>
-            <tr>
-              <th>Company</th>
-              <td>{{ scenario.company.name }}</td>
-            </tr>
-            <tr>
-              <th>Company number</th>
-              <td>{{ scenario.company.number }}</td>
-            </tr>
-            <tr>
-              <th>Accounts period</th>
-              <td>{{ scenario.penalties[0].periodStart }} to {{ scenario.penalties[0].periodEnd }}</td>
-            </tr>
-          </tbody>
-        </table>-->
-
-          <p class="lede">
-            {% if scenario.penalties | length > 1 %}
-              There are
-              {{ scenario.penalties | length }}
-              outstanding penalties
-            {% endif %}
-          </p>
-        </div>
-        <div>
-          {% for penalty in scenario.penalties %}
-            <h2 class="heading-medium">
-              Accounts period made up to
-              {{ penalty.periodEnd }}
-            </h2>
-            {% if penalty.value === 300 %}
-              <div class="panel panel-border-wide">
-                <p>
-                  The penalty for accounts period made up to
-                  {{ penalty.periodEnd}}
-                  has been doubled.
-                  <a class="link" title="Why late filing penalties may be doubled" target="_blank" href="https://www.gov.uk/annual-accounts/penalties-for-late-filing">
-                    Find out why this penalty was doubled</span>
+        <p class="lede">
+          {% if scenario.penalties | length > 1 %}
+            There are
+            {{ scenario.penalties | length }}
+            outstanding penalties
+          {% endif %}
+        </p>
+        {% for penalty in scenario.penalties %}
+          <h2 class="heading-medium">
+            Accounts period made up to
+            {{ penalty.periodEnd }}
+          </h2>
+          {% if penalty.value === 300 %}
+            <div class="panel panel-border-wide">
+              <p>
+                The penalty for accounts period made up to
+                {{ penalty.periodEnd}}
+                has been doubled.
+                <a class="link" title="Why late filing penalties may be doubled" target="_blank" href="https://www.gov.uk/annual-accounts/penalties-for-late-filing">
+                  Find out why this penalty was doubled
                 </a>.
               </p>
             </div>
@@ -67,9 +45,9 @@
           <table>
             <thead>
               <tr>
-                <th>Fee</th>
-                <th>Date</th>
-                <th>Fee Amount</th>
+                <th scope="col">Fee</th>
+                <th scope="col">Date</th>
+                <th scope="col">Fee Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -117,42 +95,41 @@
             </tbody>
           </table>
         {% endfor %}
-      </div>
-      <p class="bold-medium">
-        Total amount due: £{{ totalDue }}
-      </p>
-      {% if entryRef !== 'PEN1A/12345677' and entryRef !== 'PEN2A/12345677' %}
-        <details>
-          <summary>
-            <span class="summary">More about fees</span>
-          </summary>
-          <div class="panel panel-border-narrow">
-            <h3 class="heading-small">Late filing penalty</h3>
-            <p>
-              The fixed penalty amount due for late filing company accounts.
-            </p>
-            <h3 class="heading-small">Solicitor fee</h3>
-            <p>
-              The fee incurred as a result of your case being referred to a solicitor.
-            </p>
-            <h3 class="heading-small">Court fee</h3>
-            <p>
-              The fee charged by the court for processing your case.
-            </p>
-            <h3 class="heading-small">Hearing fee</h3>
-            <p>
-              The fee charged by the court for hearing your case.
-            </p>
-          </div>
-        </details>
-      {% endif %}
-      <div class="button-margin">
-        <p>
-          <a class="button" href="gov-pay-1" role="button">Proceed to payment</a>
+        <p class="bold-medium">
+          Total amount due: £{{ totalDue }}
         </p>
+        {% if entryRef !== 'PEN1A/12345677' and entryRef !== 'PEN2A/12345677' %}
+          <details>
+            <summary>
+              <span class="summary">More about fees</span>
+            </summary>
+            <div class="panel panel-border-narrow">
+              <h3 class="heading-small">Late filing penalty</h3>
+              <p>
+                The fixed penalty amount due for late filing company accounts.
+              </p>
+              <h3 class="heading-small">Solicitor fee</h3>
+              <p>
+                The fee incurred as a result of your case being referred to a solicitor.
+              </p>
+              <h3 class="heading-small">Court fee</h3>
+              <p>
+                The fee charged by the court for processing your case.
+              </p>
+              <h3 class="heading-small">Hearing fee</h3>
+              <p>
+                The fee charged by the court for hearing your case.
+              </p>
+            </div>
+          </details>
+        {% endif %}
+        <div class="button-margin">
+          <p>
+            <a class="button" href="gov-pay-1" role="button">Proceed to payment</a>
+          </p>
+        </div>
       </div>
     </div>
-  </div>
-</main>
+  </main>
 
 {% endblock %}
