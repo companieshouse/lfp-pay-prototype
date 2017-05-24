@@ -190,7 +190,11 @@
           <div class="grid-row">
             <div class="column-two-thirds">
               <div class="form-group">
-                <input type="submit" class="button" role="button" value="Continue"/>
+                {% if scenario.company.number == 00006400 %}
+                  <input type="submit" class="button" role="button" value="Pay now"/>
+                {% else %}
+                  <input type="submit" class="button" role="button" value="Continue"/>
+                {% endif %}
               </div>
               <div class="back">
                 <a href="#">Cancel payment</a>

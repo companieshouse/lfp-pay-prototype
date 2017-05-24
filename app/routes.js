@@ -309,7 +309,11 @@ router.post('/gov-pay-1', function (req, res) {
     })
   } else {
     req.session.payment = payment
-    res.redirect('gov-pay-2')
+    if (scenario.company.number === '12345678') {
+      res.redirect('complete')
+    } else {
+      res.redirect('gov-pay-2')
+    }
   }
 })
 
