@@ -345,6 +345,9 @@ router.get('/complete', function (req, res) {
   if (scenario != null) {
     payment = req.session.payment
     // totalPaid = (scenario.penalties[0].value + scenario.penalties[0].totalFees)
+    console.log(scenario)
+    console.log(payment)
+    console.log(totalDue)
 
     // Send confirmation email
 
