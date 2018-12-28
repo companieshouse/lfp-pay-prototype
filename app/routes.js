@@ -41,7 +41,7 @@ router.post('/enter-details', function (req, res) {
     penaltyConv !== 'PEN1A/12345671' &&
     penaltyConv !== 'PEN2A/12345671' &&
     penaltyConv !== 'PEN1A/12345672'
-   ) {
+  ) {
     penaltyErr.type = 'invalid'
     penaltyErr.msg = 'Enter your penalty reference exactly as shown on your penalty letter'
     penaltyErr.flag = true
@@ -166,10 +166,12 @@ router.post('/enter-details', function (req, res) {
 // View details of a single penalty
 router.get('/view-penalties', function (req, res) {
   var scenario = req.session.scenario
-  var entryRef = scenario.entryRef.toUpperCase()
+  var entryRef = ''
   var totalDue = 0
 
   if (scenario != null) {
+    entryRef = scenario.entryRef.toUpperCase()
+
     for (var i = 0; i < scenario.penalties.length; i++) {
       totalDue += (scenario.penalties[i].value + scenario.penalties[i].totalFees)
     }
@@ -367,11 +369,10 @@ router.get('/complete', function (req, res) {
       }, function (error, success) {
         if (error) {
           console.error('Unable to send via postmark: ' + error.message)
-          return
         }
       })
     } else {
-      console.log('No Postmrk API key detected. To test emails run app locally with `heroku local web`')
+      console.log('No Postmark API key detected. To test emails run app locally with `heroku local web`')
     }
 
     res.render('complete', {
