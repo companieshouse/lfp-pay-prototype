@@ -1,28 +1,37 @@
 {% extends "layout.html" %}
 
-{% block page_title %}
-  Pay your late filing penalty
+{% block pageTitle %}
+  {% if penaltyErr or companyErr %}Error:
+  {% endif %}
+  Tell us your penalty details
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "alpha"
+    },
+    html: 'This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.'
+  }) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "start"
+  }) }}
 {% endblock %}
 
 {% block content %}
-
-  <main id="content" role="main">
-
-    {% block phase_banner %}
-      {% include "includes/phase_banner_alpha.html" %}
-    {% endblock %}
-
-    <div class="grid-row">
-      <div class="column-two-thirds">
-        {% if penaltyErr or companyErr %}
-          <div class="error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
-            <h1 class="heading-medium error-summary-heading" id="error-summary-heading-example-1">
-              We couldn't find your penalty details
-            </h1>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% if penaltyErr or companyErr %}
+        <div class="govuk-error-summary" role="alert" aria-labelledby="error-summary-title" tabindex="-1">
+          <h2 class="govuk-error-summary__title" id="error-summary-title">
+            We couldn't find your penalty details
+          </h2>
+          <div class="govuk-error-summary__body">
             <p>
               You must provide a company number and penalty reference to pay a late filing penalty.
             </p>
-            <ol class="error-summary-list">
+            <ol class="govuk-list govuk-error-summary__list">
               {% if companyErr.type %}
                 <li>
                   <a href="#company-number">{{ companyErr.msg }}</a>
@@ -35,56 +44,65 @@
               {% endif %}
             </ol>
           </div>
-        {% endif %}
-        <h1 class="heading-xlarge">
-          Enter your penalty details
-        </h1>
-        <form class="form" method="POST" action="enter-details">
-          <div class="form-group {% if companyErr.type %} error{% endif %}">
-            <label class="form-label-bold" for="company-number">
-              Company number
-              {% if companyErr.type %}
-                <span class="error-message">
-                  {{ companyErr.msg }}
-                </span>
-              {% endif %}
-              <span class="form-hint">
-                This is the 8 character reference that uniquely identifies your company.
-              </span>
-            </label>
-            <input class="form-control" id="company-number" type="text" name="companyno" value="{{ companyno }}">
-          </div>
-          <div class="form-group {% if penaltyErr.type %} error{% endif %}">
-            <label class="form-label-bold" for="penalty-ref">
-              Penalty reference
-              {% if penaltyErr.type %}
-                <span class="error-message">
-                  {{ penaltyErr.msg }}
-                </span>
-              {% endif %}
-              <span class="form-hint">
-                This is the 14 character reference shown on your penalty notification.
-              </span>
-            </label>
-            <input class="form-control" id="penalty-ref" type="text" name="reference" value="{{ penalty }}">
-          </div>
-          <div class="form-group">
-            <details>
-              <summary>
-                <span class="summary">Where can I find these details?</span>
-              </summary>
-              <div class="panel panel-border-narrow">
-                <p>
-                  Your company number and penalty reference are shown in a box on the right side of the penalty notification.
-                </p>
-                <img src="/public/images/PenWebImage280px.png" class="call-out-image" alt=""/>
-              </div>
-            </details>
-          </div>
-          <input class="button" type="submit" value="Continue">
-        </form>
-      </div>
-    </div>
-  </main>
+        </div>
+      {% endif %}
+      <h1 class="govuk-heading-xl">
+        Tell us your penalty details
+      </h1>
 
+      {% if companyErr.msg %}
+        {% set companyNumberError = {
+          text: companyErr.msg
+        } %}
+      {% else %}
+        {% set companyNumberError = false %}
+      {% endif %}
+
+      {% if penaltyErr.msg %}
+        {% set penaltyRefError = {
+          text: penaltyErr.msg
+        } %}
+      {% else %}
+        {% set penaltyRefError = false %}
+      {% endif %}
+
+      <form method="POST" action="enter-details">
+        {{ govukInput({
+            label: {
+              text: "Company number"
+            },
+            id: "company-number",
+            name: "companyno",
+            classes: "govuk-input--width-10",
+            value: companyno,
+            errorMessage: companyNumberError
+          }) }}
+        {{ govukInput({
+            label: {
+              text: "Penalty reference"
+            },
+            id: "penalty-ref",
+            name: "reference",
+            classes: "govuk-input--width-20",
+            value: penalty,
+            errorMessage: penaltyRefError
+          }) }}
+        <div class="govuk-form-group">
+          {% set detailsText %}
+          <p>
+            Your company number and penalty reference are shown in a box on the right side of the penalty notice.
+          </p>
+          <img src="/public/images/PenWebImage280px.png" class="call-out-image" alt="" aria-hidden="true"/>
+          {% endset %}
+          {{ govukDetails({
+            summaryText: "Where can I find these details?",
+            html: detailsText
+          }) }}
+        </div>
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </form>
+    </div>
+  </div>
 {% endblock %}
