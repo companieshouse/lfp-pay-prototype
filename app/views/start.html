@@ -1,119 +1,174 @@
 {% extends "layout.html" %}
 
-{% block page_title %}
-  Pay your late filing penalty
+{% block pageTitle %}
+  Pay a late filing penalty
+{% endblock %}
+
+{% block header %}
+  {{ govukHeader() }}
+{% endblock %}
+
+{% block beforeContent %}
+  <div class="govuk-breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="#">Home</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item">
+        <a class="govuk-breadcrumbs__link" href="#">Business and self-employed</a>
+      </li>
+      <li class="govuk-breadcrumbs__list-item" aria-current="page">Running a limited company</li>
+    </ol>
+  </div>
 {% endblock %}
 
 {% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        {% if serviceName %}
+          {{ serviceName }}
+        {% endif %}
+      </h1>
+      <p class="govuk-body-l">Use this service to pay a company's late filing penalty with a credit or debit card.</p>
+      <p class="govuk-body">You'll need:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>the company number</li>
+        <li>the penalty reference shown on the penalty notice</li>
+        <li>an email address</li>
+        <li>a credit or debit card</li>
+      </ul>
+      <p class="govuk-body">It takes around 5 minutes to pay.</p>
+      {{ govukButton({
+        text: "Start now",
+        href: "enter-details",
+        classes: "govuk-button--start"
+      }) }}
 
-  <main id="content" role="main">
+      {% set detailsText %}
+      <h2 class="govuk-heading-m">By phone</h2>
+      <p class="govuk-body">
+        You can pay by phone using your credit or debit card.<br/>
+        Telephone: 0303 1234 500<br/>
+        Contact Centre lines are open between 8.30am to 6pm (Monday to Friday).<br/>
+        Paying your penalty through instalments can also be set up by phone.
+      </p>
+      <h2 class="govuk-heading-m">Cheque</h2>
+      <p class="govuk-body">
+        Send your cheque, along with the remittance advice on the bottom of your letter to:
+      </p>
+      <h3 class="govuk-heading-s">England Wales and Northern Ireland</h3>
+      <p class="govuk-body">
+        Companies House<br/>
+        PO Box 710<br/>
+        Crown Way<br/>
+        CF14 3UZ
+      </p>
+      <h3 class="govuk-heading-s">Scotland</h3>
+      <p class="govuk-body">
+        Companies House<br/>
+        Fourth Floor<br/>
+        Edinburgh Quay 2<br/>
+        139 Fountainbridge<br/>
+        Edinburgh<br/>
+        EH3 9FF
+      </p>
+      <h2 class="govuk-heading-m">BACS</h2>
+      <p class="govuk-body">
+        Quote your company number followed by the full company name in your transaction reference so we can allocate your payment properly.
+      </p>
+      {{ govukTable({
+        caption: "BACS payment details",
+        firstCellIsHeader: true,
+        rows: [
+          [
+            {
+              text: "Account name"
+            },
+            {
+              text: "Late Filing Penalties Receipts"
+            }
+          ],
+          [
+            {
+              text: "Account number"
+            },
+            {
+              text: "41005309"
+            }
+          ],
+          [
+            {
+              text: "Bank / Branch"
+            },
+            {
+              html: "National Westminster Bank<br/>
+              Roath, Cardiff"
+            }
+          ],
+          [
+            {
+              text: "Sort code"
+            },
+            {
+              text: "52 21 07"
+            }
+          ],
+          [
+            {
+              text: "Swift code"
+            },
+            {
+              text: "NW BK GB 2122X"
+            }
+          ],
+          [
+            {
+              text: "IBAN (If overseas)"
+            },
+            {
+              text: "GB34NWBK52210741005309"
+            }
+          ]
+        ]
+      }) }}
+      <p class="govuk-body">
+        Email confirmation of your BACS payment to
+        <a class="govuk-link govuk-link--no-visited-state" href="mailto:lfpfinance@companieshouse.gov.uk" title="Email the late filing penalty finance team">lfpfinance@companieshouse.gov.uk</a>. The email must include the amount paid, company number and company name.
+      </p>
+      {% endset %}
 
-    {% block phase_banner %}
-      {% include "includes/phase_banner_alpha.html" %}
-    {% endblock %}
-
-    <div class="breadcrumbs">
-      <ol>
-        <li>
-          <a href="http://www.gov.uk">Home</a>
-        </li>
-        <li>
-          <a href="">Companies House</a>
-        </li>
-        <li>Pay your late filing penalty</li>
-      </ol>
+      {{ govukDetails({
+        summaryText: "Other ways to pay a penalty",
+        html: detailsText
+      }) }}
     </div>
-
-    <div class="grid-row">
-      <div class="column-two-thirds">
-        <h1 class="heading-xlarge">
-          Pay your Companies House late filing penalty
-        </h1>
-        <p class="lede">
-          You can use this service to pay a company's late filing penalty with a credit or debit card.
-        </p>
-        <p>You'll need</p>
-        <ul class="list list-bullet">
-          <li>your company number</li>
-          <li>the penalty reference shown on your penalty notification</li>
-          <li>a credit or debit card</li>
-          <li>an email address</li>
-        </ul>
-        <p>
-          <a class="button button-start" href="enter-details" role="button">Start now</a>
-        </p>
-        <details>
-          <summary>
-            <span class="summary">Other ways to pay your penalty</span>
-          </summary>
-          <div class="panel panel-border-narrow">
-            <h4 class="heading-medium">By phone</h4>
-            <p>
-              You can pay by phone using your credit or debit card.<br/>
-              Telephone: 0303 1234 500<br/>
-              Contact Centre lines are open between 8.30am to 6pm (Monday to Friday).<br/>
-              Paying your penalty through instalments can also be set up by phone.
-            </p>
-            <h4 class="heading-medium">Cheque</h4>
-            <p>
-              Send your cheque, along with the remittance advice on the bottom of your letter to:<br/>
-              <br/>
-              <h5 class="heading-small">England Wales and Northern Ireland:</h5><br/>
-              Companies House<br/>
-              PO Box 710<br/>
-              Crown Way<br/>
-              CF14 3UZ<br>
-              <br/>
-              <h5 class="heading-small">Scotland:</h5><br>
-              Companies House<br/>
-              Fourth Floor<br/>
-              Edinburgh Quay 2<br/>
-              139 Fountainbridge<br/>
-              Edinburgh<br/>
-              EH3 9FF<br/>
-            </p>
-            <h4 class="heading-medium">BACS</h4>
-            <p>
-              Quote your company number followed by the full company name in your transaction reference so we can allocate your payment properly.
-            </p>
-            <table>
-              <tbody>
-                <tr>
-                  <th scope="row">Account name</th>
-                  <td>Late Filing Penalties Receipts</td>
-                </tr>
-                <tr>
-                  <th scope="row">Account number</th>
-                  <td>41005309</td>
-                </tr>
-                <tr>
-                  <th scope="row">Bank / Branch</th>
-                  <td>
-                    National Westminster Bank<br/>
-                    Roath, Cardiff
-                  </td>
-                </tr>
-                <tr>
-                  <th scope="row">Sort code</th>
-                  <td>52 21 07</td>
-                </tr>
-                <tr>
-                  <th scope="row">Swift code</th>
-                  <td>NW BK GB 2122X</td>
-                </tr>
-                <tr>
-                  <th scope="row">IBAN (If overseas)</th>
-                  <td>GB34NWBK52210741005309</td>
-                </tr>
-              </tbody>
-            </table>
-            <p>
-              Email confirmation of your BACS payment to lfpfinance@companieshouse.gov.uk with details of the amount paid, company number and company name.
-            </p>
-          </div>
-        </details>
-      </div>
+    <div class="govuk-grid-column-one-third">
+      <aside class="app-related-items" role="complementary">
+        <h2 class="govuk-heading-m" id="subsection-title">
+          Related content
+        </h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+          <ul class="govuk-list govuk-body-s">
+            <li>
+              <a href="https://www.gov.uk/file-an-annual-return-with-companies-house">
+                File your confirmation statement (annual return) with Companies House
+              </a>
+            </li>
+            <li>
+              <a href="https://www.gov.uk/running-a-limited-company">
+                Running a limited company
+              </a>
+            </li>
+            <li>
+              <a href="https://www.gov.uk/browse/business/limited-company" class="govuk-!-w-bold">
+                More
+                <span class="visuallyhidden">Running a limited company</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
     </div>
-  </main>
-
+  </div>
 {% endblock %}
