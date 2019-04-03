@@ -12,6 +12,12 @@ router.get('/start', function (req, res) {
   res.render('start')
 })
 
+// Lost your penalty notice
+router.get('/lost-your-penalty-notice', function (req, res) {
+  req.session.destroy()
+  res.render('lost-your-penalty-notice')
+})
+
 // Enter details
 router.get('/enter-details', function (req, res) {
   res.render('enter-details')
@@ -25,7 +31,6 @@ router.post('/enter-details', function (req, res) {
   var companyErr = {}
   var errorFlag = false
   var scenario = {}
-  var penaltyConv = penalty.toUpperCase()
 
   // VALIDATE USER INPUTS
   if (companyno.length < 8) {
@@ -35,11 +40,11 @@ router.post('/enter-details', function (req, res) {
     errorFlag = true
   }
   if (
-    penaltyConv !== 'PEN1A/12345677' &&
-    penaltyConv !== 'PEN2A/12345677' &&
-    penaltyConv !== 'PEN1A/12345671' &&
-    penaltyConv !== 'PEN2A/12345671' &&
-    penaltyConv !== 'PEN1A/12345672'
+    penalty !== '00012345' && // SINGLE PENALTY WITHOUT FEES
+    penalty !== '00012346' && // SINGLE PAID PENALTY
+    penalty !== '00012347' && // MULTIPLE PENALTY (1)
+    penalty !== '00012348' && // MULTIPLE PENALTY (2)
+    penalty !== '00012349' // SINGLE PENALTY WITH FEES
   ) {
     penaltyErr.type = 'invalid'
     penaltyErr.msg = 'Enter your penalty reference exactly as shown on your penalty letter'
@@ -62,8 +67,8 @@ router.post('/enter-details', function (req, res) {
       companyno: companyno
     })
   } else {
-    if (penaltyConv === 'PEN1A/12345677' || penaltyConv === 'PEN2A/12345677') {
-      // SINGLE PENALTY WITH FEES
+    if (penalty === '00012345') {
+      // SINGLE PENALTY WITHOUT FEES
       scenario.entryRef = penalty
       scenario.company = {
         name: 'BATTERSEA POWER LIMITED',
@@ -71,8 +76,7 @@ router.post('/enter-details', function (req, res) {
       }
       scenario.penalties = [
         {
-          pen1: 'PEN1A/12345677',
-          pen2: 'PEN2A/12345677',
+          pen1: '00012345',
           periodStart: '1 May 2015',
           periodEnd: '30 April 2016',
           due: '1 January 2017',
@@ -81,23 +85,48 @@ router.post('/enter-details', function (req, res) {
           band: 'Up to 1 month overdue',
           value: 150,
           fees: {},
-          totalFees: 0
+          totalFees: 0,
+          paid: false
         }
       ]
 
       req.session.scenario = scenario
       res.redirect('/view-penalties')
-    } else if (penaltyConv === 'PEN1A/12345671' || penaltyConv === 'PEN2A/12345671' || penaltyConv === 'PEN1A/12345672') {
-      // MULTIPLE PENALTIES
+    } else if (penalty === '00012346') {
+      // SINGLE PENALTY THAT HAS BEEN PAID
       scenario.entryRef = penalty
       scenario.company = {
-        name: 'BATTERSEA POWER LIMITED',
+        name: 'WILKINS GLAZING LIMITED',
         number: companyno
       }
       scenario.penalties = [
         {
-          pen1: 'PEN1A/12345671',
-          pen2: 'PEN2A/12345671',
+          pen1: '00012346',
+          periodStart: '1 May 2015',
+          periodEnd: '30 April 2016',
+          due: '1 January 2017',
+          filed: '15 January 2017',
+          overdue: '14 days',
+          band: 'Up to 1 month overdue',
+          value: 150,
+          fees: {},
+          totalFees: 0,
+          paid: true
+        }
+      ]
+
+      req.session.scenario = scenario
+      res.redirect('/penalty-has-been-paid')
+    } else if (penalty === '00012347' || penalty === '00012348') {
+      // MULTIPLE PENALTIES
+      scenario.entryRef = penalty
+      scenario.company = {
+        name: 'TEMPLETON METALWORK LIMITED',
+        number: companyno
+      }
+      scenario.penalties = [
+        {
+          pen1: '00012347',
           periodStart: '1 May 2014',
           periodEnd: '30 April 2015',
           due: '1 January 2016',
@@ -126,11 +155,11 @@ router.post('/enter-details', function (req, res) {
               }
             ]
           },
-          totalFees: 0
+          totalFees: 0,
+          paid: false
         },
         {
-          pen1: 'PEN1A/12345672',
-          pen2: '',
+          pen1: '00012348',
           periodStart: '1 May 2015',
           periodEnd: '30 April 2016',
           due: '1 January 2017',
@@ -139,7 +168,66 @@ router.post('/enter-details', function (req, res) {
           band: 'Up to 1 month overdue',
           value: 300,
           fees: {},
-          totalFees: 0
+          totalFees: 0,
+          paid: false
+        }
+      ]
+
+      for (var i = 0; i < scenario.penalties.length; i++) {
+        if (scenario.penalties[i].fees.solicitor) {
+          for (var j = 0; j < scenario.penalties[i].fees.solicitor.length; j++) {
+            scenario.penalties[i].totalFees += scenario.penalties[i].fees.solicitor[j].value
+          }
+        }
+        if (scenario.penalties[i].fees.court) {
+          for (var k = 0; k < scenario.penalties[i].fees.court.length; k++) {
+            scenario.penalties[i].totalFees += scenario.penalties[i].fees.court[k].value
+          }
+        }
+      }
+
+      req.session.scenario = scenario
+      res.redirect('/view-penalties')
+    } else if (penalty === '00012349') {
+      // SINGLE PENALTY WITH FEES
+      scenario.entryRef = penalty
+      scenario.company = {
+        name: 'ROSEGOLD LIMITED',
+        number: companyno
+      }
+      scenario.penalties = [
+        {
+          pen1: '00012349',
+          periodStart: '1 May 2014',
+          periodEnd: '30 April 2015',
+          due: '1 January 2016',
+          filed: '15 January 2016',
+          overdue: '14 days',
+          band: 'Up to 1 month overdue',
+          value: 150,
+          fees: {
+            solicitor: [
+              {
+                name: 'Solicitor fee',
+                date: '23 April 2016',
+                value: 50.00
+              }
+            ],
+            court: [
+              {
+                name: 'Court fee',
+                date: '23 April 2016',
+                value: 25.00
+              },
+              {
+                name: 'Hearing fee',
+                date: '23 April 2016',
+                value: 22.00
+              }
+            ]
+          },
+          totalFees: 0,
+          paid: false
         }
       ]
 
@@ -177,7 +265,7 @@ router.get('/view-penalties', function (req, res) {
   var totalDue = 0
 
   if (scenario != null) {
-    entryRef = scenario.entryRef.toUpperCase()
+    entryRef = scenario.entryRef
 
     for (var i = 0; i < scenario.penalties.length; i++) {
       totalDue += (scenario.penalties[i].value + scenario.penalties[i].totalFees)
@@ -185,6 +273,30 @@ router.get('/view-penalties', function (req, res) {
 
     req.session.totalDue = totalDue
     res.render('view-penalties', {
+      scenario: scenario,
+      totalDue: totalDue,
+      entryRef: entryRef
+    })
+  } else {
+    res.redirect('/enter-details')
+  }
+})
+
+// View details of a single penalty
+router.get('/penalty-has-been-paid', function (req, res) {
+  var scenario = req.session.scenario
+  var entryRef = ''
+  var totalDue = 0
+
+  if (scenario != null) {
+    entryRef = scenario.entryRef
+
+    for (var i = 0; i < scenario.penalties.length; i++) {
+      totalDue += (scenario.penalties[i].value + scenario.penalties[i].totalFees)
+    }
+
+    req.session.totalDue = totalDue
+    res.render('penalty-has-been-paid', {
       scenario: scenario,
       totalDue: totalDue,
       entryRef: entryRef

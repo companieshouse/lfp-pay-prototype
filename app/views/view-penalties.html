@@ -22,9 +22,24 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">
-        Late filing penalties for
+        {% if scenario.penalties | length > 1 %}
+          Late filing penalties for
+        {% else %}
+          Late filing penalty for
+        {% endif %}
         {{ scenario.company.name }}
       </h1>
+      {% if scenario.entryRef === '00012349' %}
+        {% set legalFeesHTML%}
+        <p class="govuk-body">This penalty has legal fees and cannot be paid online using this service.</p>
+        <p class="govuk-body">
+          <a href="https://www.gov.uk/government/publications/late-filing-penalties/late-filing-penalties#paying-the-penalty" class="govuk-link">Other ways to pay a penalty</a>
+        </p>
+        {% endset %}
+        {{ govukInsetText({
+          html: legalFeesHTML
+        }) }}
+      {% endif %}
       <p class="govuk-body-l">
         {% if scenario.penalties | length > 1 %}
           There are
@@ -90,7 +105,7 @@
                 </tr>
               {% endfor %}
             {% endif %}
-            {% if scenario.entryRef !== 'PEN2A/12345678' %}
+            {% if scenario.entryRef !== '00012349' or scenario.entryRef !== '00012347' or scenario.entryRef !== '00012348' %}
               {% if penalty.fees.solicitor or penalty.fees.court %}
                 <tr>
                   <td colspan="2" class="table-total govuk-table__cell">
@@ -105,10 +120,10 @@
           </tbody>
         </table>
       {% endfor %}
-      <p class="govuk-body govuk-!-f-27 govuk-!-w-bold">
+      <p class="govuk-body govuk-!-font-size-24 govuk-!-font-weight-bold">
         Total amount due: £{{ totalDue }}
       </p>
-      {% if entryRef !== 'PEN1A/12345677' and entryRef !== 'PEN2A/12345677' %}
+      {% if entryRef === '00012349' or entryRef === '00012347' or entryRef === '00012348' %}
 
         {% set detailsText %}
         <h3 class="govuk-heading-s">Late filing penalty</h3>
@@ -130,13 +145,17 @@
         {% endset %}
         {{ govukDetails({
           summaryText: "More about fees",
-          text: detailText
+          html: detailsText
         }) }}
       {% endif %}
-      {{ govukButton({
+      {% if scenario.entryRef !== '00012349' %}
+        {{ govukButton({
         text: "Continue",
         href: "card-details"
       }) }}
+      {% else %}
+
+      {% endif %}
     </div>
   </div>
 {% endblock %}
