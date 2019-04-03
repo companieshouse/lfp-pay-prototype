@@ -1,0 +1,377 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  {% if errors %}Error:
+  {% endif %}
+  Pay for government services: Pay a late filing penalty
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">Enter card details</h1>
+      {% if errors %}
+        <div class="govuk-error-summary" role="group" aria-labelledby="error-summary-heading-example-1" tabindex="-1">
+          <h2 class="govuk-error-summary__title" id="error-summary-heading-example-1">
+            Your payment could not be made
+          </h2>
+          <div class="govuk-error-summary_body">
+            <p>
+              We couldn't verify your payment details. Please check your payment details are correct and try again.
+            </p>
+            <ul class="govuk-list govuk-error-summary__list">
+              {% if errors.cardNumber %}
+                <li>
+                  <a href="#{{ errors.cardNumber.ref }}">{{ errors.cardNumber.msg }}</a>
+                </li>
+              {% endif %}
+              {% if errors.expiry %}
+                <li>
+                  <a href="#{{ errors.expiry.ref }}">{{ errors.expiry.msg }}</a>
+                </li>
+              {% endif %}
+              {% if errors.fullName %}
+                <li>
+                  <a href="#{{ errors.fullName.ref }}">{{ errors.fullName.msg }}</a>
+                </li>
+              {% endif %}
+              {% if errors.securityCode %}
+                <li>
+                  <a href="#{{ errors.securityCode.ref }}">{{ errors.securityCode.msg }}</a>
+                </li>
+              {% endif %}
+              {% if errors.country %}
+                <li>
+                  <a href="#{{ errors.country.ref }}">{{ errors.country.msg }}</a>
+                </li>
+              {% endif %}
+              {% if errors.buildingAndStreet %}
+                <li>
+                  <a href="#{{ errors.buildingAndStreet.ref }}">{{ errors.buildingAndStreet.msg }}</a>
+                </li>
+              {% endif %}
+              {% if errors.townOrCity %}
+                <li>
+                  <a href="#{{ errors.townOrCity.ref }}">{{ errors.townOrCity.msg }}</a>
+                </li>
+              {% endif %}
+              {% if errors.postCode %}
+                <li>
+                  <a href="#{{ errors.postCode.ref }}">{{ errors.postCode.msg }}</a>
+                </li>
+              {% endif %}
+              {% if errors.emailAddress %}
+                <li>
+                  <a href="#{{ errors.emailAddress.ref }}">{{ errors.emailAddress.msg }}</a>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+
+        {% if errors.cardNumber %}
+          {% set cardNumberError = {
+            text: errors.cardNumber.msg
+          } %}
+        {% else %}
+          {% set cardNumberError = false %}
+        {% endif %}
+
+        {% if errors.expiryMonth %}
+          {% set expiryMonthError = {
+            text: errors.expiryMonth.msg
+          } %}
+        {% else %}
+          {% set expiryMonthError = false %}
+        {% endif %}
+
+        {% if errors.fullName %}
+          {% set fullNameError = {
+            text: errors.fullName.msg
+          } %}
+        {% else %}
+          {% set fullNameError = false %}
+        {% endif %}
+
+        {% if errors.securityCode %}
+          {% set securityCodeError = {
+            text: errors.securityCode.msg
+          } %}
+        {% else %}
+          {% set securityCodeError = false %}
+        {% endif %}
+
+        {% if errors.country %}
+          {% set countryError = {
+            text: errors.country.msg
+          } %}
+        {% else %}
+          {% set countryError = false %}
+        {% endif %}
+
+        {% if errors.buildingStreet %}
+          {% set buildingStreetError = {
+            text: errors.buildingStreet.msg
+          } %}
+        {% else %}
+          {% set buildingStreetError = false %}
+        {% endif %}
+
+        {% if errors.townOrCity %}
+          {% set townOrCityError = {
+            text: errors.townOrCity.msg
+          } %}
+        {% else %}
+          {% set townOrCityError = false %}
+        {% endif %}
+
+        {% if errors.postCode %}
+          {% set postCodeError = {
+            text: errors.postCode.msg
+          } %}
+        {% else %}
+          {% set postCodeError = false %}
+        {% endif %}
+
+        {% if errors.emailAddress %}
+          {% set emailAddressError = {
+            text: errors.emailAddress.msg
+          } %}
+        {% else %}
+          {% set emailAddressError = false %}
+        {% endif %}
+
+      {% endif %}
+      <form method="POST" action="" autocomplete="off">
+        {{ govukInput({
+          label: {
+            text: "Card number",
+            classes: "govuk-!-font-weight-bold"
+          },
+          id: "card-number",
+          name: "cardNumber",
+          type: "tel",
+          value: payment.cardNumber,
+          classes: "govuk-input--width-20",
+          formGroup: {
+            classes: "govuk-!-margin-bottom-0"
+          },
+          errorMessage: cardNumberError,
+          attributes: {
+            pattern: "[0-9]*",
+            min: "0",
+            max: "9999999999999999"
+          }
+        }) }}
+        <ul class="accepted-cards field-empty">
+          <li class="american-express" data-key="american-express" data-credit="true" data-debit="false">
+            <span class="govuk-warning-text__assistive">
+              american-express
+            </span>
+          </li>
+          <li class="visa" data-key="visa" data-credit="true" data-debit="true">
+            <span class="govuk-warning-text__assistive">
+              visa
+            </span>
+          </li>
+          <li class="master-card" data-key="master-card" data-credit="true" data-debit="true">
+            <span class="govuk-warning-text__assistive">
+              master-card
+            </span>
+          </li>
+          <li class="unionpay" data-key="unionpay" data-credit="true" data-debit="false">
+            <span class="govuk-warning-text__assistive">
+              unionpay
+            </span>
+          </li>
+          <li class="jcb" data-key="jcb" data-credit="true" data-debit="false">
+            <span class="govuk-warning-text__assistive">
+              jcb
+            </span>
+          </li>
+          <li class="discover" data-key="discover" data-credit="true" data-debit="false">
+            <span class="govuk-warning-text__assistive">
+              discover
+            </span>
+          </li>
+          <li class="diners-club" data-key="diners-club" data-credit="true" data-debit="false">
+            <span class="govuk-warning-text__assistive">
+              diners-club
+            </span>
+          </li>
+        </ul>
+        <p class="govuk-body-s accepted-cards-hint withdrawal-text">
+          Accepted credit and debit card types
+        </p>
+        <div class="govuk-form-group {% if errors.expiry %}govuk-form-group--error{% endif %}">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend">
+              <label class="govuk-label govuk-!-font-weight-bold" for="exp-month">Expiry date</label>
+              <span id="card-security-number-hint" class="govuk-hint">
+                For example, 10/20
+              </span>
+              {% if errors.cardNumber %}
+                <span class="govuk-error-message">
+                  {{ errors.expiry.msg }}
+                </span>
+              {% endif %}
+            </legend>
+            <div class="govuk-form-group expiry-date" id="card-expiry">
+              <div class="govuk-date-input__item expiry-separator">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="expiry-month">
+                    Month
+                  </label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-4 {% if errors.expiry %}govuk-input--error{% endif %}" id="expiry-month" name="expiryMonth" type="number" pattern="[0-9]*" min="1" max="12" value="{{ payment.expiryMonth }}">
+                </div>
+              </div>
+              <div class="govuk-date-input__item">
+                <div class="govuk-form-group">
+                  <label class="govuk-label govuk-date-input__label" for="expiry-year">
+                    Year
+                  </label>
+                  <input class="govuk-input govuk-date-input__input govuk-input--width-4 {% if errors.expiry %}govuk-input--error{% endif %}" id="expiry-year" name="expiryYear" type="number" pattern="[0-9]*" min="16" max="25" value="{{ payment.expiryYear }}">
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        {{ govukInput({
+          label: {
+            text: "Name on card",
+            classes: "govuk-!-font-weight-bold"
+          },
+          id: "full-name",
+          name: "fullName",
+          type: "text",
+          value: payment.fullName,
+          classes: "govuk-input--width-20",
+          errorMessage: fullNameError
+        }) }}
+        {{ govukInput({
+          label: {
+           text: "Card security code",
+           classes: "govuk-!-font-weight-bold"
+          },
+          formGroup: {
+            classes: "cvc"
+          },
+          hint: {
+            text: "The last 3 digits on the back of the card"
+          },
+          id: "card-security-number",
+          name: "securityCode",
+          type: "number",
+          value: payment.securityCode,
+          classes: "govuk-input--width-4",
+          errorMessage: securityCodeError,
+          attributes: {
+            pattern: "[0-9]*",
+            min: "0",
+            max: "999"
+          }
+        }) }}
+        <div class="govuk-form-group govuk-!-margin-bottom-2">
+          <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Billing address</h2>
+          <p class="govuk-body govuk-!-margin-bottom-0">This is the address where the card is registered</p>
+        </div>
+        {{ govukInput({
+          label: {
+           text: "Country or territory",
+           classes: "govuk-!-font-weight-bold"
+          },
+          id: "country",
+          name: "country",
+          type: "text",
+          value: payment.country,
+          classes: "govuk-input--width-20",
+          errorMessage: countryError
+        }) }}
+        {{ govukInput({
+          label: {
+           text: "Building number or name and street",
+           classes: "govuk-!-font-weight-bold"
+          },
+          id: "building-number",
+          name: "buildingStreet",
+          type: "text",
+          value: payment.buildingStreet,
+          classes: "govuk-input--width-20",
+          errorMessage: buildingStreetError
+        }) }}
+        {{ govukInput({
+          id: "building-and-street",
+          name: "buildingAndStreet",
+          type: "text",
+          classes: "govuk-input--width-20"
+        }) }}
+        {{ govukInput({
+          label: {
+           text: "Town or city",
+           classes: "govuk-!-font-weight-bold"
+          },
+          id: "town-or-city",
+          name: "townOrCity",
+          type: "text",
+          value: payment.townOrCity,
+          classes: "govuk-input--width-10",
+          errorMessage: townOrCityError
+        }) }}
+        {{ govukInput({
+          label: {
+           text: "Postcode",
+           classes: "govuk-!-font-weight-bold"
+          },
+          id: "postcode",
+          name: "postCode",
+          type: "text",
+          value: payment.postCode,
+          classes: "govuk-input--width-10",
+          errorMessage: postCodeError
+        }) }}
+        {{ govukInput({
+          label: {
+           text: "Email",
+           classes: "govuk-!-font-weight-bold"
+          },
+          hint: {
+            text: "We’ll send your payment confirmation here"
+          },
+          id: "email-address",
+          name: "emailAddress",
+          type: "text",
+          value: payment.emailAddress,
+          classes: "govuk-input--width-20",
+          errorMessage: emailAddressError
+        }) }}
+        <div class="govuk-form-group">
+          {% if scenario.company.number === "12345678" %}
+            {{ govukButton({
+              text: "Pay now"
+            }) }}
+          {% else %}
+            {{ govukButton({
+              text: "Continue"
+            }) }}
+          {% endif %}
+        </div>
+        <div class="back">
+          <a href="view-penalties" class="govuk-link govuk-!-font-size-19">Cancel payment</a>
+        </div>
+      </form>
+    </div>
+    <div class="govuk-grid-column-one-third payment-summary-wrap">
+      <aside class="payment-summary">
+        <h2 class="govuk-heading-m">Payment summary</h2>
+        <p id="payment-description" class="govuk-body govuk-!-font-weight-bold">
+          Late filing penalty
+        </p>
+        <p class="govuk-body govuk-!-margin-bottom-0">
+          Total amount:
+          <span id="amount" class="amount govuk-!-font-size-36 govuk-!-font-weight-bold" data-amount="150.00">£{{ totalDue }}</span>
+        </p>
+      </aside>
+    </div>
+  </div>
+</div>
+{% endblock %}
