@@ -8,9 +8,9 @@
 {% block beforeContent %}
   {{ govukPhaseBanner({
     tag: {
-      text: "alpha"
+      text: "beta"
     },
-    html: 'This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.'
+    html: 'This is a trial service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.'
   }) }}
   {{ govukBackLink({
     text: "Back",
@@ -151,7 +151,7 @@
       {% if scenario.entryRef !== '00012349' %}
         {{ govukButton({
         text: "Continue",
-        href: "card-details"
+        href: payLink
       }) }}
       {% else %}
 

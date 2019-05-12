@@ -19,8 +19,16 @@ router.get('/lost-your-penalty-notice', function (req, res) {
 })
 
 // Enter details
+router.get('/login', function (req, res) {
+  req.session.accountEmail = req.query.accountEmail
+  res.redirect('enter-details')
+})
+
+// Enter details
 router.get('/enter-details', function (req, res) {
-  res.render('enter-details')
+  res.render('enter-details', {
+    accountEmail: req.session.accountEmail
+  })
 })
 
 // Enter details
@@ -31,6 +39,9 @@ router.post('/enter-details', function (req, res) {
   var companyErr = {}
   var errorFlag = false
   var scenario = {}
+  var i = 0
+  var j = 0
+  var k = 0
 
   // VALIDATE USER INPUTS
   if (companyno.length < 8) {
@@ -173,14 +184,14 @@ router.post('/enter-details', function (req, res) {
         }
       ]
 
-      for (var i = 0; i < scenario.penalties.length; i++) {
+      for (i = 0; i < scenario.penalties.length; i++) {
         if (scenario.penalties[i].fees.solicitor) {
-          for (var j = 0; j < scenario.penalties[i].fees.solicitor.length; j++) {
+          for (j = 0; j < scenario.penalties[i].fees.solicitor.length; j++) {
             scenario.penalties[i].totalFees += scenario.penalties[i].fees.solicitor[j].value
           }
         }
         if (scenario.penalties[i].fees.court) {
-          for (var k = 0; k < scenario.penalties[i].fees.court.length; k++) {
+          for (k = 0; k < scenario.penalties[i].fees.court.length; k++) {
             scenario.penalties[i].totalFees += scenario.penalties[i].fees.court[k].value
           }
         }
@@ -231,14 +242,14 @@ router.post('/enter-details', function (req, res) {
         }
       ]
 
-      for (var i = 0; i < scenario.penalties.length; i++) {
+      for (i = 0; i < scenario.penalties.length; i++) {
         if (scenario.penalties[i].fees.solicitor) {
-          for (var j = 0; j < scenario.penalties[i].fees.solicitor.length; j++) {
+          for (j = 0; j < scenario.penalties[i].fees.solicitor.length; j++) {
             scenario.penalties[i].totalFees += scenario.penalties[i].fees.solicitor[j].value
           }
         }
         if (scenario.penalties[i].fees.court) {
-          for (var k = 0; k < scenario.penalties[i].fees.court.length; k++) {
+          for (k = 0; k < scenario.penalties[i].fees.court.length; k++) {
             scenario.penalties[i].totalFees += scenario.penalties[i].fees.court[k].value
           }
         }
@@ -263,6 +274,8 @@ router.get('/view-penalties', function (req, res) {
   var scenario = req.session.scenario
   var entryRef = ''
   var totalDue = 0
+  var payLink = ''
+  var env = (process.env.NODE_ENV || 'development').toLowerCase()
 
   if (scenario != null) {
     entryRef = scenario.entryRef
@@ -270,12 +283,28 @@ router.get('/view-penalties', function (req, res) {
     for (var i = 0; i < scenario.penalties.length; i++) {
       totalDue += (scenario.penalties[i].value + scenario.penalties[i].totalFees)
     }
+    console.log(env)
+    // Pay Link
+    if (env === 'development') {
+      if (scenario.entryRef === '00012345') {
+        payLink = process.env.BPL_REDIRECT
+      } else if (scenario.entryRef === '00012347' || scenario.entryRef === '00012348') {
+        payLink = process.env.TML_REDIRECT
+      }
+    } else {
+      if (scenario.entryRef === '00012345') {
+        payLink = process.env.BPL_PAY
+      } else if (scenario.entryRef === '00012347' || scenario.entryRef === '00012348') {
+        payLink = process.env.TML_PAY
+      }
+    }
 
     req.session.totalDue = totalDue
     res.render('view-penalties', {
       scenario: scenario,
       totalDue: totalDue,
-      entryRef: entryRef
+      entryRef: entryRef,
+      payLink: payLink
     })
   } else {
     res.redirect('/enter-details')
@@ -505,6 +534,13 @@ router.get('/payment-confirmation', function (req, res) {
   } else {
     res.redirect('/enter-details')
   }
+})
+
+// Localhost redirect for GOV.UK Pay
+// // This redirect is only used by the DEV Heroku instance. It allows the DEV
+// // instance to support live redirects from GOV.UK Pay back to your local port
+router.get('/local-redirect', function (req, res) {
+  res.redirect('http://localhost:3344/payment-confirmation')
 })
 
 module.exports = router
