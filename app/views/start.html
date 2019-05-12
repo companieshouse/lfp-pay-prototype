@@ -35,18 +35,23 @@
       <p class="govuk-body">You'll need:</p>
       <ul class="govuk-list govuk-list--bullet">
         <li>the company number</li>
-        <li>the penalty reference shown on the penalty notice &ndash;
+        <li>the reference number shown on the penalty notice &ndash;
           <a href="/lost-your-penalty-notice" class="govuk-link">What to do if you've lost your penalty notice</a>
         </li>
-        <li>an email address</li>
+        <li>an email address or existing Companies House account</li>
         <li>a credit or debit card</li>
       </ul>
       <p class="govuk-body">It takes around 5 minutes to pay.</p>
-      {{ govukButton({
-        text: "Start now",
-        href: "enter-details",
-        classes: "govuk-button--start"
-      }) }}
+      <form action="http://localhost:3345/sign-in" method="POST">
+        {{ govukButton({
+          text: "Start now",
+          classes: "govuk-button--start"
+        }) }}
+        <input type="hidden" name="continueURL" value="http://localhost:3344/login">
+        <input type="hidden" name="backURL" value="http://localhost:3344/start">
+        <input type="hidden" name="serviceURL" value="http://localhost:3344/start">
+        <input type="hidden" name="serviceName" value="Pay a late filing penalty">
+      </form>
 
       {% set detailsText %}
       <h2 class="govuk-heading-m">By phone</h2>
