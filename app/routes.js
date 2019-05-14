@@ -542,5 +542,8 @@ router.get('/payment-confirmation', function (req, res) {
 router.get('/local-redirect', function (req, res) {
   res.redirect('http://localhost:3344/payment-confirmation')
 })
+router.post('/local-redirect', function (req, res) {
+  res.redirect('http://localhost:3344/payment-confirmation')
+})
 
 module.exports = router
