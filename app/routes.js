@@ -531,11 +531,8 @@ router.get('/payment-confirmation', function (req, res) {
   var scenario = req.session.scenario
   var totalDue = req.session.totalDue
   var accountEmail = req.session.accountEmail
-  var payment = ''
 
   if (scenario != null) {
-    payment = req.session.payment
-
     // Send confirmation email
     if (process.env.POSTMARK_API_KEY) {
       var postmark = require('postmark')
@@ -547,7 +544,6 @@ router.get('/payment-confirmation', function (req, res) {
         'TemplateId': process.env.ETID_CONFIRMATION,
         'TemplateModel': {
           'scenario': scenario,
-          'payment': payment,
           'totalPaid': totalDue,
           'accountEmail': accountEmail
         }
@@ -562,7 +558,6 @@ router.get('/payment-confirmation', function (req, res) {
 
     res.render('payment-confirmation', {
       scenario: scenario,
-      payment: payment,
       accountEmail: accountEmail
     })
   } else {
