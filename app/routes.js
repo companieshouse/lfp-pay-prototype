@@ -530,6 +530,7 @@ router.get('/review-payment', function (req, res) {
 router.get('/payment-confirmation', function (req, res) {
   var scenario = req.session.scenario
   var totalDue = req.session.totalDue
+  var accountEmail = req.session.accountEmail
   var payment = ''
 
   if (scenario != null) {
@@ -541,13 +542,14 @@ router.get('/payment-confirmation', function (req, res) {
       var client = new postmark.Client(process.env.POSTMARK_API_KEY)
 
       client.sendEmailWithTemplate({
-        'From': 'owilliams@companieshouse.gov.uk',
-        'To': 'test.user.lfp@gmail.com',
+        'From': process.env.FROM_EMAIL,
+        'To': process.env.TO_EMAIL,
         'TemplateId': process.env.ETID_CONFIRMATION,
         'TemplateModel': {
           'scenario': scenario,
           'payment': payment,
-          'totalPaid': totalDue
+          'totalPaid': totalDue,
+          'accountEmail': accountEmail
         }
       }, function (error, success) {
         if (error) {
@@ -560,7 +562,8 @@ router.get('/payment-confirmation', function (req, res) {
 
     res.render('payment-confirmation', {
       scenario: scenario,
-      payment: payment
+      payment: payment,
+      accountEmail: accountEmail
     })
   } else {
     res.redirect('/enter-details')
