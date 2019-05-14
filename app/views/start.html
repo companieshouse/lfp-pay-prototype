@@ -42,14 +42,14 @@
         <li>a credit or debit card</li>
       </ul>
       <p class="govuk-body">It takes around 5 minutes to pay.</p>
-      <form action="http://localhost:3345/sign-in" method="POST">
+      <form action="{{ chAccountURL }}sign-in" method="POST">
         {{ govukButton({
           text: "Start now",
           classes: "govuk-button--start"
         }) }}
-        <input type="hidden" name="continueURL" value="http://localhost:3344/login">
-        <input type="hidden" name="backURL" value="http://localhost:3344/start">
-        <input type="hidden" name="serviceURL" value="http://localhost:3344/start">
+        <input type="hidden" name="continueURL" value="{{ serviceURL }}login">
+        <input type="hidden" name="backURL" value="{{ serviceURL }}start">
+        <input type="hidden" name="serviceURL" value="{{ serviceURL }}start">
         <input type="hidden" name="serviceName" value="Pay a late filing penalty">
       </form>
 

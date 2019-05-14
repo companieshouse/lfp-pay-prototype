@@ -8,8 +8,14 @@ router.get('/', function (req, res) {
 
 // Start page
 router.get('/start', function (req, res) {
+  var chAccountURL = process.env.CH_ACCOUNT_URL
+  var serviceURL = process.env.SERVICE_URL
+
   req.session.destroy()
-  res.render('start')
+  res.render('start', {
+    chAccountURL: chAccountURL,
+    serviceURL: serviceURL
+  })
 })
 
 // Lost your penalty notice
@@ -274,6 +280,30 @@ router.get('/view-penalties', function (req, res) {
   var scenario = req.session.scenario
   var entryRef = ''
   var totalDue = 0
+
+  if (scenario != null) {
+    entryRef = scenario.entryRef
+
+    for (var i = 0; i < scenario.penalties.length; i++) {
+      totalDue += (scenario.penalties[i].value + scenario.penalties[i].totalFees)
+    }
+
+    req.session.totalDue = totalDue
+    res.render('view-penalties', {
+      scenario: scenario,
+      totalDue: totalDue,
+      entryRef: entryRef
+    })
+  } else {
+    res.redirect('/start')
+  }
+})
+
+// View details of a single penalty
+router.get('/payment-service', function (req, res) {
+  var scenario = req.session.scenario
+  var entryRef = ''
+  var totalDue = 0
   var payLink = ''
   var env = (process.env.NODE_ENV || 'development').toLowerCase()
 
@@ -283,7 +313,7 @@ router.get('/view-penalties', function (req, res) {
     for (var i = 0; i < scenario.penalties.length; i++) {
       totalDue += (scenario.penalties[i].value + scenario.penalties[i].totalFees)
     }
-    console.log(env)
+
     // Pay Link
     if (env === 'development') {
       if (scenario.entryRef === '00012345') {
@@ -300,11 +330,12 @@ router.get('/view-penalties', function (req, res) {
     }
 
     req.session.totalDue = totalDue
-    res.render('view-penalties', {
+    res.render('payment-service', {
       scenario: scenario,
       totalDue: totalDue,
       entryRef: entryRef,
-      payLink: payLink
+      payLink: payLink,
+      env: env
     })
   } else {
     res.redirect('/enter-details')
