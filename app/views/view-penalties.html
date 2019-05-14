@@ -29,6 +29,7 @@
         {% endif %}
         {{ scenario.company.name }}
       </h1>
+      {{ env }}
       {% if scenario.entryRef === '00012349' %}
         {% set legalFeesHTML%}
         <p class="govuk-body">This penalty has legal fees and cannot be paid online using this service.</p>
@@ -151,7 +152,7 @@
       {% if scenario.entryRef !== '00012349' %}
         {{ govukButton({
         text: "Continue",
-        href: payLink
+        href: "payment-service"
       }) }}
       {% else %}
 
