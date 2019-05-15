@@ -8,8 +8,14 @@ router.get('/', function (req, res) {
 
 // Start page
 router.get('/start', function (req, res) {
+  var chAccountURL = process.env.CH_ACCOUNT_URL
+  var serviceURL = process.env.SERVICE_URL
+
   req.session.destroy()
-  res.render('start')
+  res.render('start', {
+    chAccountURL: chAccountURL,
+    serviceURL: serviceURL
+  })
 })
 
 // Lost your penalty notice
@@ -19,8 +25,16 @@ router.get('/lost-your-penalty-notice', function (req, res) {
 })
 
 // Enter details
+router.get('/login', function (req, res) {
+  req.session.accountEmail = req.query.accountEmail
+  res.redirect('enter-details')
+})
+
+// Enter details
 router.get('/enter-details', function (req, res) {
-  res.render('enter-details')
+  res.render('enter-details', {
+    accountEmail: req.session.accountEmail
+  })
 })
 
 // Enter details
@@ -31,6 +45,9 @@ router.post('/enter-details', function (req, res) {
   var companyErr = {}
   var errorFlag = false
   var scenario = {}
+  var i = 0
+  var j = 0
+  var k = 0
 
   // VALIDATE USER INPUTS
   if (companyno.length < 8) {
@@ -77,11 +94,11 @@ router.post('/enter-details', function (req, res) {
       scenario.penalties = [
         {
           pen1: '00012345',
-          periodStart: '1 May 2015',
-          periodEnd: '30 April 2016',
-          due: '1 January 2017',
-          filed: '15 January 2017',
-          overdue: '14 days',
+          periodStart: '31 July 2017',
+          periodEnd: '1 August 2018',
+          due: '1 May 2019',
+          filed: '10 May 2019',
+          overdue: '9 days',
           band: 'Up to 1 month overdue',
           value: 150,
           fees: {},
@@ -173,14 +190,14 @@ router.post('/enter-details', function (req, res) {
         }
       ]
 
-      for (var i = 0; i < scenario.penalties.length; i++) {
+      for (i = 0; i < scenario.penalties.length; i++) {
         if (scenario.penalties[i].fees.solicitor) {
-          for (var j = 0; j < scenario.penalties[i].fees.solicitor.length; j++) {
+          for (j = 0; j < scenario.penalties[i].fees.solicitor.length; j++) {
             scenario.penalties[i].totalFees += scenario.penalties[i].fees.solicitor[j].value
           }
         }
         if (scenario.penalties[i].fees.court) {
-          for (var k = 0; k < scenario.penalties[i].fees.court.length; k++) {
+          for (k = 0; k < scenario.penalties[i].fees.court.length; k++) {
             scenario.penalties[i].totalFees += scenario.penalties[i].fees.court[k].value
           }
         }
@@ -231,14 +248,14 @@ router.post('/enter-details', function (req, res) {
         }
       ]
 
-      for (var i = 0; i < scenario.penalties.length; i++) {
+      for (i = 0; i < scenario.penalties.length; i++) {
         if (scenario.penalties[i].fees.solicitor) {
-          for (var j = 0; j < scenario.penalties[i].fees.solicitor.length; j++) {
+          for (j = 0; j < scenario.penalties[i].fees.solicitor.length; j++) {
             scenario.penalties[i].totalFees += scenario.penalties[i].fees.solicitor[j].value
           }
         }
         if (scenario.penalties[i].fees.court) {
-          for (var k = 0; k < scenario.penalties[i].fees.court.length; k++) {
+          for (k = 0; k < scenario.penalties[i].fees.court.length; k++) {
             scenario.penalties[i].totalFees += scenario.penalties[i].fees.court[k].value
           }
         }
@@ -276,6 +293,49 @@ router.get('/view-penalties', function (req, res) {
       scenario: scenario,
       totalDue: totalDue,
       entryRef: entryRef
+    })
+  } else {
+    res.redirect('/start')
+  }
+})
+
+// View details of a single penalty
+router.get('/payment-service', function (req, res) {
+  var scenario = req.session.scenario
+  var entryRef = ''
+  var totalDue = 0
+  var payLink = ''
+  var env = (process.env.NODE_ENV || 'development').toLowerCase()
+
+  if (scenario != null) {
+    entryRef = scenario.entryRef
+
+    for (var i = 0; i < scenario.penalties.length; i++) {
+      totalDue += (scenario.penalties[i].value + scenario.penalties[i].totalFees)
+    }
+
+    // Pay Link
+    if (env === 'development') {
+      if (scenario.entryRef === '00012345') {
+        payLink = process.env.BPL_REDIRECT
+      } else if (scenario.entryRef === '00012347' || scenario.entryRef === '00012348') {
+        payLink = process.env.TML_REDIRECT
+      }
+    } else {
+      if (scenario.entryRef === '00012345') {
+        payLink = process.env.BPL_PAY
+      } else if (scenario.entryRef === '00012347' || scenario.entryRef === '00012348') {
+        payLink = process.env.TML_PAY
+      }
+    }
+
+    req.session.totalDue = totalDue
+    res.render('payment-service', {
+      scenario: scenario,
+      totalDue: totalDue,
+      entryRef: entryRef,
+      payLink: payLink,
+      env: env
     })
   } else {
     res.redirect('/enter-details')
@@ -470,24 +530,22 @@ router.get('/review-payment', function (req, res) {
 router.get('/payment-confirmation', function (req, res) {
   var scenario = req.session.scenario
   var totalDue = req.session.totalDue
-  var payment = ''
+  var accountEmail = req.session.accountEmail
 
   if (scenario != null) {
-    payment = req.session.payment
-
     // Send confirmation email
     if (process.env.POSTMARK_API_KEY) {
       var postmark = require('postmark')
       var client = new postmark.Client(process.env.POSTMARK_API_KEY)
 
       client.sendEmailWithTemplate({
-        'From': 'owilliams@companieshouse.gov.uk',
-        'To': 'test.user.lfp@gmail.com',
+        'From': process.env.FROM_EMAIL,
+        'To': process.env.TO_EMAIL,
         'TemplateId': process.env.ETID_CONFIRMATION,
         'TemplateModel': {
           'scenario': scenario,
-          'payment': payment,
-          'totalPaid': totalDue
+          'totalPaid': totalDue,
+          'accountEmail': accountEmail
         }
       }, function (error, success) {
         if (error) {
@@ -500,11 +558,21 @@ router.get('/payment-confirmation', function (req, res) {
 
     res.render('payment-confirmation', {
       scenario: scenario,
-      payment: payment
+      accountEmail: accountEmail
     })
   } else {
     res.redirect('/enter-details')
   }
+})
+
+// Localhost redirect for GOV.UK Pay
+// // This redirect is only used by the DEV Heroku instance. It allows the DEV
+// // instance to support live redirects from GOV.UK Pay back to your local port
+router.get('/local-redirect', function (req, res) {
+  res.redirect('http://localhost:3344/payment-confirmation')
+})
+router.post('/local-redirect', function (req, res) {
+  res.redirect('http://localhost:3344/payment-confirmation')
 })
 
 module.exports = router

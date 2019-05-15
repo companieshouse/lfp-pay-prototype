@@ -4,6 +4,15 @@
   Pay your late filing penalty
 {% endblock %}
 
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "beta"
+    },
+    html: 'This is a trial service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.'
+  }) }}
+{% endblock %}
+
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -13,13 +22,13 @@
       }) }}
       <p class="govuk-body-l">
         We've sent a confirmation email containing this reference number to
-        <span class="govuk-!-font-weight-bold">{{ payment.emailAddress }}</span>.
+        <span class="govuk-!-font-weight-bold">{{ accountEmail }}</span>.
       </p>
       <p class="govuk-body">
         <a href="javascript:window.print()" class="govuk-link">Print this page for your records</a>
       </p>
       <p class="govuk-body">
-        <a href="/public/Late_filing_penalty_pdf.pdf" class="govuk-link">Save a copy of this page (PDF, 304KB)</a>
+        <a href="/public/files/Late_filing_penalty_pdf.pdf" class="govuk-link">Save a copy of this page (PDF, 304KB)</a>
       </p>
       <h2 class="govuk-heading-m">
         What happens next?

@@ -9,9 +9,9 @@
 {% block beforeContent %}
   {{ govukPhaseBanner({
     tag: {
-      text: "alpha"
+      text: "beta"
     },
-    html: 'This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.'
+    html: 'This is a trial service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.'
   }) }}
   {{ govukBackLink({
     text: "Back",
@@ -79,7 +79,7 @@
           }) }}
         {{ govukInput({
             label: {
-              text: "Penalty reference"
+              text: "Reference number"
             },
             id: "penalty-ref",
             name: "reference",
@@ -90,9 +90,9 @@
         <div class="govuk-form-group">
           {% set detailsText %}
           <p>
-            Your company number and penalty reference are shown in a box on the right side of the penalty notice.
+            Your company number and reference number are shown on at the bottom of your penalty notice.
           </p>
-          <img src="/public/images/PenWebImage280px.png" class="call-out-image" alt="" aria-hidden="true"/>
+          <img src="/public/images/penalty-notice-image.png" class="call-out-image" alt="" aria-hidden="true"/>
           {% endset %}
           {{ govukDetails({
             summaryText: "Where can I find these details?",
