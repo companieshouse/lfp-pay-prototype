@@ -24,6 +24,10 @@
       <h1 class="govuk-heading-xl">
         Review your payment
       </h1>
+      {% set paymentLabel %}
+      Late Filing Penalty (00012345)<br/>
+      BATTERSEA POWER LIMITED (00345567)
+      {% endset %}
       {{ govukTable({
         caption: "Items you are paying for",
         captionClasses: "govuk-visually-hidden",
@@ -40,7 +44,7 @@
         rows: [
           [
             {
-              text: "Late Filing Penalty (00345567)"
+              html: paymentLabel
             },
             {
               text: "£150",

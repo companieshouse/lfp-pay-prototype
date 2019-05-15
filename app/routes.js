@@ -94,11 +94,11 @@ router.post('/enter-details', function (req, res) {
       scenario.penalties = [
         {
           pen1: '00012345',
-          periodStart: '1 May 2015',
-          periodEnd: '30 April 2016',
-          due: '1 January 2017',
-          filed: '15 January 2017',
-          overdue: '14 days',
+          periodStart: '31 July 2017',
+          periodEnd: '1 August 2018',
+          due: '1 May 2019',
+          filed: '10 May 2019',
+          overdue: '9 days',
           band: 'Up to 1 month overdue',
           value: 150,
           fees: {},
