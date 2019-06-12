@@ -61,7 +61,11 @@ router.post('/enter-details', function (req, res) {
     penalty !== '00012346' && // SINGLE PAID PENALTY
     penalty !== '00012347' && // MULTIPLE PENALTY (1)
     penalty !== '00012348' && // MULTIPLE PENALTY (2)
-    penalty !== '00012349' // SINGLE PENALTY WITH FEES
+    penalty !== '00012349' && // SINGLE PENALTY WITH FEES
+    penalty !== '00012350' && // PENALTY WITH AN INSTALMENT PLAN
+    penalty !== '00012351' && // PART-PAID PENALTY
+    penalty !== '00012352' && // VALID COMPANY WITH NO PENALTY
+    penalty !== '00012353' // VALID COMPANY WITH NO PENALTY
   ) {
     penaltyErr.type = 'invalid'
     penaltyErr.msg = 'Enter your penalty reference exactly as shown on your penalty letter'
@@ -134,6 +138,80 @@ router.post('/enter-details', function (req, res) {
 
       req.session.scenario = scenario
       res.redirect('/penalty-has-been-paid')
+    } else if (penalty === '00012350') {
+      // SINGLE PENALTY UNDER AN INSTALMENT PLAN
+      scenario.entryRef = penalty
+      scenario.company = {
+        name: 'TWO MAN BAND LIMITED',
+        number: companyno
+      }
+      scenario.penalties = [
+        {
+          pen1: '00012350',
+          periodStart: '1 May 2015',
+          periodEnd: '30 April 2016',
+          due: '1 January 2017',
+          filed: '15 January 2017',
+          overdue: '14 days',
+          band: 'Up to 1 month overdue',
+          value: 150,
+          fees: {},
+          totalFees: 0,
+          paid: true,
+          instalmentPlan: true
+        }
+      ]
+
+      req.session.scenario = scenario
+      res.redirect('/paying-by-instalments')
+    } else if (penalty === '00012351') {
+      // SINGLE PENALTY THAT HAS BEEN PART_PAID
+      scenario.entryRef = penalty
+      scenario.company = {
+        name: 'THREADGOLD TAILORING LIMITED',
+        number: companyno
+      }
+      scenario.penalties = [
+        {
+          pen1: '00012351',
+          periodStart: '1 May 2015',
+          periodEnd: '30 April 2016',
+          due: '1 January 2017',
+          filed: '15 January 2017',
+          overdue: '14 days',
+          band: 'Up to 1 month overdue',
+          value: 100,
+          fees: {},
+          totalFees: 0,
+          paid: true,
+          instalmentPlan: false
+        }
+      ]
+
+      req.session.scenario = scenario
+      res.redirect('/part-paid-penalty')
+    } else if (penalty === '00012352') {
+      // VALID COMPANY WITH NO MATCHING PENALTY
+      scenario.entryRef = penalty
+      scenario.company = {
+        name: 'SUNDANCE STAGE PRODUCTION LIMITED',
+        number: companyno
+      }
+      scenario.penalties = []
+
+      req.session.scenario = scenario
+      res.redirect('/no-penalty-found')
+    } else if (penalty === '00012353') {
+      // NO MATCHING COMPANY
+      scenario.entryRef = penalty
+      scenario.company = {
+        name: '',
+        number: companyno
+      }
+      scenario.penalties = []
+
+      req.session.scenario = scenario
+      res.redirect('/no-company-found')
     } else if (penalty === '00012347' || penalty === '00012348') {
       // MULTIPLE PENALTIES
       scenario.entryRef = penalty
@@ -563,6 +641,22 @@ router.get('/payment-confirmation', function (req, res) {
   } else {
     res.redirect('/enter-details')
   }
+})
+
+router.get('/no-penalty-found', function (req, res) {
+  var scenario = req.session.scenario
+
+  res.render('no-penalty-found', {
+    scenario: scenario
+  })
+})
+
+router.get('/no-company-found', function (req, res) {
+  var scenario = req.session.scenario
+
+  res.render('no-company-found', {
+    scenario: scenario
+  })
 })
 
 // Localhost redirect for GOV.UK Pay
