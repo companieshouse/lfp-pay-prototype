@@ -3,19 +3,38 @@ var router = express.Router()
 
 // Route index page
 router.get('/', function (req, res) {
-  req.session.destroy()
-  res.render('start')
+  res.redirect('/start')
 })
 
 // Start page
 router.get('/start', function (req, res) {
+  var chAccountURL = process.env.CH_ACCOUNT_URL
+  var serviceURL = process.env.SERVICE_URL
+
   req.session.destroy()
-  res.render('start')
+  res.render('start', {
+    chAccountURL: chAccountURL,
+    serviceURL: serviceURL
+  })
+})
+
+// Lost your penalty notice
+router.get('/lost-your-penalty-notice', function (req, res) {
+  req.session.destroy()
+  res.render('lost-your-penalty-notice')
+})
+
+// Enter details
+router.get('/login', function (req, res) {
+  req.session.accountEmail = req.query.accountEmail
+  res.redirect('enter-details')
 })
 
 // Enter details
 router.get('/enter-details', function (req, res) {
-  res.render('enter-details')
+  res.render('enter-details', {
+    accountEmail: req.session.accountEmail
+  })
 })
 
 // Enter details
@@ -26,7 +45,9 @@ router.post('/enter-details', function (req, res) {
   var companyErr = {}
   var errorFlag = false
   var scenario = {}
-  var penaltyConv = penalty.toUpperCase()
+  var i = 0
+  var j = 0
+  var k = 0
 
   // VALIDATE USER INPUTS
   if (companyno.length < 8) {
@@ -36,12 +57,12 @@ router.post('/enter-details', function (req, res) {
     errorFlag = true
   }
   if (
-    penaltyConv !== 'PEN1A/12345677' &&
-    penaltyConv !== 'PEN2A/12345677' &&
-    penaltyConv !== 'PEN1A/12345671' &&
-    penaltyConv !== 'PEN2A/12345671' &&
-    penaltyConv !== 'PEN1A/12345672'
-   ) {
+    penalty !== '00012345' && // SINGLE PENALTY WITHOUT FEES
+    penalty !== '00012346' && // SINGLE PAID PENALTY
+    penalty !== '00012347' && // MULTIPLE PENALTY (1)
+    penalty !== '00012348' && // MULTIPLE PENALTY (2)
+    penalty !== '00012349' // SINGLE PENALTY WITH FEES
+  ) {
     penaltyErr.type = 'invalid'
     penaltyErr.msg = 'Enter your penalty reference exactly as shown on your penalty letter'
     penaltyErr.flag = true
@@ -63,8 +84,8 @@ router.post('/enter-details', function (req, res) {
       companyno: companyno
     })
   } else {
-    if (penaltyConv === 'PEN1A/12345677' || penaltyConv === 'PEN2A/12345677') {
-      // SINGLE PENALTY WITH FEES
+    if (penalty === '00012345') {
+      // SINGLE PENALTY WITHOUT FEES
       scenario.entryRef = penalty
       scenario.company = {
         name: 'BATTERSEA POWER LIMITED',
@@ -72,8 +93,32 @@ router.post('/enter-details', function (req, res) {
       }
       scenario.penalties = [
         {
-          pen1: 'PEN1A/12345677',
-          pen2: 'PEN2A/12345677',
+          pen1: '00012345',
+          periodStart: '31 July 2017',
+          periodEnd: '1 August 2018',
+          due: '1 May 2019',
+          filed: '10 May 2019',
+          overdue: '9 days',
+          band: 'Up to 1 month overdue',
+          value: 150,
+          fees: {},
+          totalFees: 0,
+          paid: false
+        }
+      ]
+
+      req.session.scenario = scenario
+      res.redirect('/view-penalties')
+    } else if (penalty === '00012346') {
+      // SINGLE PENALTY THAT HAS BEEN PAID
+      scenario.entryRef = penalty
+      scenario.company = {
+        name: 'WILKINS GLAZING LIMITED',
+        number: companyno
+      }
+      scenario.penalties = [
+        {
+          pen1: '00012346',
           periodStart: '1 May 2015',
           periodEnd: '30 April 2016',
           due: '1 January 2017',
@@ -82,23 +127,23 @@ router.post('/enter-details', function (req, res) {
           band: 'Up to 1 month overdue',
           value: 150,
           fees: {},
-          totalFees: 0
+          totalFees: 0,
+          paid: true
         }
       ]
 
       req.session.scenario = scenario
-      res.redirect('/view-penalties')
-    } else if (penaltyConv === 'PEN1A/12345671' || penaltyConv === 'PEN2A/12345671' || penaltyConv === 'PEN1A/12345672') {
+      res.redirect('/penalty-has-been-paid')
+    } else if (penalty === '00012347' || penalty === '00012348') {
       // MULTIPLE PENALTIES
       scenario.entryRef = penalty
       scenario.company = {
-        name: 'BATTERSEA POWER LIMITED',
+        name: 'TEMPLETON METALWORK LIMITED',
         number: companyno
       }
       scenario.penalties = [
         {
-          pen1: 'PEN1A/12345671',
-          pen2: 'PEN2A/12345671',
+          pen1: '00012347',
           periodStart: '1 May 2014',
           periodEnd: '30 April 2015',
           due: '1 January 2016',
@@ -127,11 +172,11 @@ router.post('/enter-details', function (req, res) {
               }
             ]
           },
-          totalFees: 0
+          totalFees: 0,
+          paid: false
         },
         {
-          pen1: 'PEN1A/12345672',
-          pen2: '',
+          pen1: '00012348',
           periodStart: '1 May 2015',
           periodEnd: '30 April 2016',
           due: '1 January 2017',
@@ -140,18 +185,77 @@ router.post('/enter-details', function (req, res) {
           band: 'Up to 1 month overdue',
           value: 300,
           fees: {},
-          totalFees: 0
+          totalFees: 0,
+          paid: false
         }
       ]
 
-      for (var i = 0; i < scenario.penalties.length; i++) {
+      for (i = 0; i < scenario.penalties.length; i++) {
         if (scenario.penalties[i].fees.solicitor) {
-          for (var j = 0; j < scenario.penalties[i].fees.solicitor.length; j++) {
+          for (j = 0; j < scenario.penalties[i].fees.solicitor.length; j++) {
             scenario.penalties[i].totalFees += scenario.penalties[i].fees.solicitor[j].value
           }
         }
         if (scenario.penalties[i].fees.court) {
-          for (var k = 0; k < scenario.penalties[i].fees.court.length; k++) {
+          for (k = 0; k < scenario.penalties[i].fees.court.length; k++) {
+            scenario.penalties[i].totalFees += scenario.penalties[i].fees.court[k].value
+          }
+        }
+      }
+
+      req.session.scenario = scenario
+      res.redirect('/view-penalties')
+    } else if (penalty === '00012349') {
+      // SINGLE PENALTY WITH FEES
+      scenario.entryRef = penalty
+      scenario.company = {
+        name: 'ROSEGOLD LIMITED',
+        number: companyno
+      }
+      scenario.penalties = [
+        {
+          pen1: '00012349',
+          periodStart: '1 May 2014',
+          periodEnd: '30 April 2015',
+          due: '1 January 2016',
+          filed: '15 January 2016',
+          overdue: '14 days',
+          band: 'Up to 1 month overdue',
+          value: 150,
+          fees: {
+            solicitor: [
+              {
+                name: 'Solicitor fee',
+                date: '23 April 2016',
+                value: 50.00
+              }
+            ],
+            court: [
+              {
+                name: 'Court fee',
+                date: '23 April 2016',
+                value: 25.00
+              },
+              {
+                name: 'Hearing fee',
+                date: '23 April 2016',
+                value: 22.00
+              }
+            ]
+          },
+          totalFees: 0,
+          paid: false
+        }
+      ]
+
+      for (i = 0; i < scenario.penalties.length; i++) {
+        if (scenario.penalties[i].fees.solicitor) {
+          for (j = 0; j < scenario.penalties[i].fees.solicitor.length; j++) {
+            scenario.penalties[i].totalFees += scenario.penalties[i].fees.solicitor[j].value
+          }
+        }
+        if (scenario.penalties[i].fees.court) {
+          for (k = 0; k < scenario.penalties[i].fees.court.length; k++) {
             scenario.penalties[i].totalFees += scenario.penalties[i].fees.court[k].value
           }
         }
@@ -163,12 +267,23 @@ router.post('/enter-details', function (req, res) {
   }
 })
 
+// Restart journey if no scenario is loaded into the session
+router.all('*', function (req, res, next) {
+  if (typeof req.session.scenario === 'undefined') {
+    return res.redirect('/start')
+  }
+  next()
+})
+
 // View details of a single penalty
 router.get('/view-penalties', function (req, res) {
   var scenario = req.session.scenario
+  var entryRef = ''
   var totalDue = 0
 
   if (scenario != null) {
+    entryRef = scenario.entryRef
+
     for (var i = 0; i < scenario.penalties.length; i++) {
       totalDue += (scenario.penalties[i].value + scenario.penalties[i].totalFees)
     }
@@ -176,7 +291,75 @@ router.get('/view-penalties', function (req, res) {
     req.session.totalDue = totalDue
     res.render('view-penalties', {
       scenario: scenario,
-      totalDue: totalDue
+      totalDue: totalDue,
+      entryRef: entryRef
+    })
+  } else {
+    res.redirect('/start')
+  }
+})
+
+// View details of a single penalty
+router.get('/payment-service', function (req, res) {
+  var scenario = req.session.scenario
+  var entryRef = ''
+  var totalDue = 0
+  var payLink = ''
+  var env = (process.env.NODE_ENV || 'development').toLowerCase()
+
+  if (scenario != null) {
+    entryRef = scenario.entryRef
+
+    for (var i = 0; i < scenario.penalties.length; i++) {
+      totalDue += (scenario.penalties[i].value + scenario.penalties[i].totalFees)
+    }
+
+    // Pay Link
+    if (env === 'development') {
+      if (scenario.entryRef === '00012345') {
+        payLink = process.env.BPL_REDIRECT
+      } else if (scenario.entryRef === '00012347' || scenario.entryRef === '00012348') {
+        payLink = process.env.TML_REDIRECT
+      }
+    } else {
+      if (scenario.entryRef === '00012345') {
+        payLink = process.env.BPL_PAY
+      } else if (scenario.entryRef === '00012347' || scenario.entryRef === '00012348') {
+        payLink = process.env.TML_PAY
+      }
+    }
+
+    req.session.totalDue = totalDue
+    res.render('payment-service', {
+      scenario: scenario,
+      totalDue: totalDue,
+      entryRef: entryRef,
+      payLink: payLink,
+      env: env
+    })
+  } else {
+    res.redirect('/enter-details')
+  }
+})
+
+// View details of a single penalty
+router.get('/penalty-has-been-paid', function (req, res) {
+  var scenario = req.session.scenario
+  var entryRef = ''
+  var totalDue = 0
+
+  if (scenario != null) {
+    entryRef = scenario.entryRef
+
+    for (var i = 0; i < scenario.penalties.length; i++) {
+      totalDue += (scenario.penalties[i].value + scenario.penalties[i].totalFees)
+    }
+
+    req.session.totalDue = totalDue
+    res.render('penalty-has-been-paid', {
+      scenario: scenario,
+      totalDue: totalDue,
+      entryRef: entryRef
     })
   } else {
     res.redirect('/enter-details')
@@ -184,12 +367,12 @@ router.get('/view-penalties', function (req, res) {
 })
 
 // gov uk pay page
-router.get('/gov-pay-1', function (req, res) {
+router.get('/card-details', function (req, res) {
   var scenario = req.session.scenario
   var totalDue = req.session.totalDue
 
   if (scenario != null) {
-    res.render('gov-pay-1', {
+    res.render('card-details', {
       scenario: scenario,
       totalDue: totalDue
     })
@@ -199,7 +382,7 @@ router.get('/gov-pay-1', function (req, res) {
 })
 
 // gov uk pay page
-router.post('/gov-pay-1', function (req, res) {
+router.post('/card-details', function (req, res) {
   var scenario = req.session.scenario
   var totalDue = req.session.totalDue
   var payment = {}
@@ -207,10 +390,11 @@ router.post('/gov-pay-1', function (req, res) {
   var errorFlag = false
 
   payment.cardNumber = req.body.cardNumber.replace(/\s+/g, '')
-  payment.expMonth = req.body.expMonth
-  payment.expYear = req.body.expYear
+  payment.expiryMonth = req.body.expiryMonth
+  payment.expiryYear = req.body.expiryYear
   payment.fullName = req.body.fullName
   payment.securityCode = req.body.securityCode
+  payment.country = req.body.country
   payment.buildingStreet = req.body.buildingStreet
   payment.buildingAndStreet = req.body.buildingAndStreet
   payment.townOrCity = req.body.townOrCity
@@ -234,11 +418,11 @@ router.post('/gov-pay-1', function (req, res) {
     errorFlag = true
   }
 
-  if (payment.expMonth === '' || payment.expYear === '') {
+  if (payment.expiryMonth === '' || payment.expiryYear === '') {
     errors.expiry = {
       type: 'blank',
       msg: 'A card expiry month and year are required',
-      ref: 'exp-month'
+      ref: 'expiry-month'
     }
     errorFlag = true
   }
@@ -256,7 +440,16 @@ router.post('/gov-pay-1', function (req, res) {
     errors.securityCode = {
       type: 'blank',
       msg: 'A card security code is required',
-      ref: 'security-number'
+      ref: 'card-security-number'
+    }
+    errorFlag = true
+  }
+
+  if (payment.country === '') {
+    errors.country = {
+      type: 'blank',
+      msg: 'A country is required',
+      ref: 'country'
     }
     errorFlag = true
   }
@@ -265,7 +458,7 @@ router.post('/gov-pay-1', function (req, res) {
     errors.buildingStreet = {
       type: 'blank',
       msg: 'A building name and/or number and street is required',
-      ref: 'building-street'
+      ref: 'building-number'
     }
     errorFlag = true
   }
@@ -299,7 +492,7 @@ router.post('/gov-pay-1', function (req, res) {
 
   // hybridECK ERROR FLAG
   if (errorFlag === true) {
-    res.render('gov-pay-1', {
+    res.render('card-details', {
       errors: errors,
       scenario: scenario,
       totalDue: totalDue,
@@ -307,19 +500,23 @@ router.post('/gov-pay-1', function (req, res) {
     })
   } else {
     req.session.payment = payment
-    res.redirect('gov-pay-2')
+    if (scenario.company.number === '12345678') {
+      res.redirect('payment-confirmation')
+    } else {
+      res.redirect('review-payment')
+    }
   }
 })
 
 // gov uk pay page
-router.get('/gov-pay-2', function (req, res) {
+router.get('/review-payment', function (req, res) {
   var scenario = req.session.scenario
   var totalDue = req.session.totalDue
   var payment = ''
 
   if (scenario != null) {
     payment = req.session.payment
-    res.render('gov-pay-2', {
+    res.render('review-payment', {
       scenario: scenario,
       payment: payment,
       totalDue: totalDue
@@ -330,48 +527,52 @@ router.get('/gov-pay-2', function (req, res) {
 })
 
 // process complete
-router.get('/complete', function (req, res) {
+router.get('/payment-confirmation', function (req, res) {
   var scenario = req.session.scenario
   var totalDue = req.session.totalDue
-  var payment = ''
-  // var totalPaid = 0
+  var accountEmail = req.session.accountEmail
 
   if (scenario != null) {
-    payment = req.session.payment
-    // totalPaid = (scenario.penalties[0].value + scenario.penalties[0].totalFees)
-
     // Send confirmation email
-
     if (process.env.POSTMARK_API_KEY) {
       var postmark = require('postmark')
       var client = new postmark.Client(process.env.POSTMARK_API_KEY)
 
       client.sendEmailWithTemplate({
-        'From': 'owilliams@companieshouse.gov.uk',
-        'To': 'test.user.lfp@gmail.com',
+        'From': process.env.FROM_EMAIL,
+        'To': process.env.TO_EMAIL,
         'TemplateId': process.env.ETID_CONFIRMATION,
         'TemplateModel': {
           'scenario': scenario,
-          'payment': payment,
-          'totalPaid': totalDue
+          'totalPaid': totalDue,
+          'accountEmail': accountEmail
         }
       }, function (error, success) {
         if (error) {
           console.error('Unable to send via postmark: ' + error.message)
-          return
         }
       })
     } else {
-      console.log('No Postmrk API key detected. To test emails run app locally with `heroku local web`')
+      console.log('No Postmark API key detected. To test emails run app locally with `heroku local web`')
     }
 
-    res.render('complete', {
+    res.render('payment-confirmation', {
       scenario: scenario,
-      payment: payment
+      accountEmail: accountEmail
     })
   } else {
     res.redirect('/enter-details')
   }
+})
+
+// Localhost redirect for GOV.UK Pay
+// // This redirect is only used by the DEV Heroku instance. It allows the DEV
+// // instance to support live redirects from GOV.UK Pay back to your local port
+router.get('/local-redirect', function (req, res) {
+  res.redirect('http://localhost:3344/payment-confirmation')
+})
+router.post('/local-redirect', function (req, res) {
+  res.redirect('http://localhost:3344/payment-confirmation')
 })
 
 module.exports = router

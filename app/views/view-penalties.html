@@ -1,146 +1,162 @@
 {% extends "layout.html" %}
-{% block page_title %}
-  Pay your late filing penalty
+
+{% block pageTitle %}
+  Late filing penalties for
+  {{scenario.company.name}}
 {% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "beta"
+    },
+    html: 'This is a trial service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.'
+  }) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "enter-details"
+  }) }}
+{% endblock %}
+
 {% block content %}
-
-  <main id="content" role="main">
-
-    {% block phase_banner %}
-      {% include "includes/phase_banner_alpha.html" %}
-    {% endblock %}
-
-    <div class="grid-row">
-      <div class="column-two-thirds">
-        <h1 class="heading-xlarge">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        {% if scenario.penalties | length > 1 %}
           Late filing penalties for
-          {{ scenario.company.name }}
-        </h1>
-        <div>
-          <!--<table>
-          <tbody>
-            <tr>
-              <th>Penalty reference</th>
-              <td>{{ scenario.entryRef }}</td>
-            </tr>
-            <tr>
-              <th>Company</th>
-              <td>{{ scenario.company.name }}</td>
-            </tr>
-            <tr>
-              <th>Company number</th>
-              <td>{{ scenario.company.number }}</td>
-            </tr>
-            <tr>
-              <th>Accounts period</th>
-              <td>{{ scenario.penalties[0].periodStart }} to {{ scenario.penalties[0].periodEnd }}</td>
-            </tr>
-          </tbody>
-        </table>-->
-
-          <p class="lede">
-            {% if scenario.penalties | length > 1 %}
-              There are
-              {{ scenario.penalties | length }}
-              outstanding penalties
-            {% endif %}
-          </p>
-        </div>
-        <div>
-          {% for penalty in scenario.penalties %}
-            <h2 class="heading-medium">
-              Accounts period made up to
-              {{ penalty.periodEnd }}
-            </h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Fee</th>
-                  <th>Date</th>
-                  <th>Fee Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Late filing penalty</td>
-                  <td>{{ penalty.filed }}</td>
-                  <td>£{{ penalty.value }}</td>
-                </tr>
-                {% if penalty.fees.solicitor %}
-                  {% for solicitor in penalty.fees.solicitor %}
-                    <tr>
-                      <td>
-                        {{ solicitor.name }}
-                      </td>
-                      <td>
-                        {{ solicitor.date }}
-                      </td>
-                      <td>£{{ solicitor.value }}</td>
-                    </tr>
-                  {% endfor %}
-                {% endif %}
-                {% if penalty.fees.court %}
-                  {% for court in penalty.fees.court %}
-                    <tr>
-                      <td>
-                        {{ court.name }}
-                      </td>
-                      <td>
-                        {{ court.date }}
-                      </td>
-                      <td>£{{ court.value }}</td>
-                    </tr>
-                  {% endfor %}
-                {% endif %}
-                {% if scenario.entryRef !== 'PEN2A/12345678' %}
-                  <tr>
-                    <td colspan="2" class="table-total">
-                      Total:
-                    </td>
-                    <td>
-                      £{{ penalty.value + penalty.totalFees }}
-                    </td>
-                  </tr>
-                {% endif %}
-              </tbody>
-            </table>
-          {% endfor %}
-        </div>
-        <p class="bold-medium">
-          Total amount due: £{{ totalDue }}
-        </p>
-        {% if version != 'concise' %}
-          <details>
-            <summary>
-              <span class="summary">More about fees</span>
-            </summary>
-            <div class="panel panel-border-narrow">
-              <h3 class="heading-small">Late filing penalty</h3>
-              <p>
-                The fixed penalty amount due for late filing company accounts.
-              </p>
-              <h3 class="heading-small">Solicitor fee</h3>
-              <p>
-                The fee incurred as a result of your case being referred to a solicitor.
-              </p>
-              <h3 class="heading-small">Court fee</h3>
-              <p>
-                The fee charged by the court for processing your case.
-              </p>
-              <h3 class="heading-small">Hearing fee</h3>
-              <p>
-                The fee charged by the court for hearing your case.
-              </p>
-            </div>
-          </details>
+        {% else %}
+          Late filing penalty for
         {% endif %}
-        <div class="button-margin">
-          <p>
-            <a class="button" href="gov-pay-1" role="button">Proceed to payment</a>
-          </p>
-        </div>
-      </div>
-    </div>
-  </main>
+        {{ scenario.company.name }}
+      </h1>
+      {{ env }}
+      {% if scenario.entryRef === '00012349' %}
+        {% set legalFeesHTML%}
+        <p class="govuk-body">This penalty has other legal fees, so you cannot use this online service.</p>
+        <p class="govuk-body">
+          <a href="https://www.gov.uk/government/publications/late-filing-penalties/late-filing-penalties#paying-the-penalty" class="govuk-link">Other ways to pay a penalty</a>
+        </p>
+        {% endset %}
+        {{ govukInsetText({
+          html: legalFeesHTML
+        }) }}
+      {% endif %}
+      <p class="govuk-body-l">
+        {% if scenario.penalties | length > 1 %}
+          There are
+          {{ scenario.penalties | length }}
+          outstanding penalties
+        {% endif %}
+      </p>
+      {% for penalty in scenario.penalties %}
+        <h2 class="govuk-heading-m">
+          Accounts period made up to
+          {{ penalty.periodEnd }}
+        </h2>
+        {% if penalty.value === 300 %}
+          <div class="govuk-details__text govuk-!-mb-r4">
+            <p class="govuk-body">
+              The penalty for accounts period made up to
+              {{ penalty.periodEnd}}
+              has been doubled.
+              <a class="govuk-link" title="Why late filing penalties may be doubled" target="_blank" href="https://www.gov.uk/annual-accounts/penalties-for-late-filing">
+                Find out why this penalty was doubled
+              </a>.
+            </p>
+          </div>
+        {% endif %}
+        <table class="govuk-table govuk-!-mb-r7">
+          <caption class="govuk-table__caption"></caption>
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header" scope="col">Fee</th>
+              <th class="govuk-table__header" scope="col">Date</th>
+              <th class="govuk-table__header govuk-table__header--numeric" scope="col">Fee Amount</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">Late filing penalty</td>
+              <td class="govuk-table__cell">{{ penalty.filed }}</td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">£{{ penalty.value }}</td>
+            </tr>
+            {% if penalty.fees.solicitor %}
+              {% for solicitor in penalty.fees.solicitor %}
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">
+                    {{ solicitor.name }}
+                  </td>
+                  <td class="govuk-table__cell">
+                    {{ solicitor.date }}
+                  </td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">£{{ solicitor.value }}</td>
+                </tr>
+              {% endfor %}
+            {% endif %}
+            {% if penalty.fees.court %}
+              {% for court in penalty.fees.court %}
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">
+                    {{ court.name }}
+                  </td>
+                  <td class="govuk-table__cell">
+                    {{ court.date }}
+                  </td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">£{{ court.value }}</td>
+                </tr>
+              {% endfor %}
+            {% endif %}
+            {% if scenario.entryRef !== '00012349' or scenario.entryRef !== '00012347' or scenario.entryRef !== '00012348' %}
+              {% if penalty.fees.solicitor or penalty.fees.court %}
+                <tr>
+                  <td colspan="2" class="table-total govuk-table__cell">
+                    Total (Including fees):
+                  </td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">
+                    £{{ penalty.value + penalty.totalFees }}
+                  </td>
+                </tr>
+              {% endif %}
+            {% endif %}
+          </tbody>
+        </table>
+      {% endfor %}
+      <p class="govuk-body govuk-!-font-size-24 govuk-!-font-weight-bold">
+        Total amount due: £{{ totalDue }}
+      </p>
+      {% if entryRef === '00012349' or entryRef === '00012347' or entryRef === '00012348' %}
 
+        {% set detailsText %}
+        <h3 class="govuk-heading-s">Late filing penalty</h3>
+        <p class="govuk-body">
+          The fixed penalty amount due for late filing company accounts.
+        </p>
+        <h3 class="govuk-heading-s">Solicitor fee</h3>
+        <p class="govuk-body">
+          The fee incurred as a result of your case being referred to a solicitor.
+        </p>
+        <h3 class="govuk-heading-s">Court fee</h3>
+        <p class="govuk-body">
+          The fee charged by the court for processing your case.
+        </p>
+        <h3 class="govuk-heading-s">Hearing fee</h3>
+        <p class="govuk-body">
+          The fee charged by the court for hearing your case.
+        </p>
+        {% endset %}
+        {{ govukDetails({
+          summaryText: "More about fees",
+          html: detailsText
+        }) }}
+      {% endif %}
+      {% if scenario.entryRef !== '00012349' %}
+        {{ govukButton({
+        text: "Continue",
+        href: "payment-service"
+      }) }}
+      {% else %}
+
+      {% endif %}
+    </div>
+  </div>
 {% endblock %}

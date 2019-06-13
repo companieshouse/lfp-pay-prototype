@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "beta"
+    },
+    html: 'This is a trial service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.'
+  }) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "view-penalties"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        Review your payment
+      </h1>
+      {% set paymentLabel %}
+      Late Filing Penalty (00012345)<br/>
+      BATTERSEA POWER LIMITED (00345567)
+      {% endset %}
+      {{ govukTable({
+        caption: "Items you are paying for",
+        captionClasses: "govuk-visually-hidden",
+        firstCellIsHeader: false,
+        head: [
+          {
+            text: "Item"
+          },
+          {
+            text: "Amount to pay",
+            format: "numeric"
+          }
+        ],
+        rows: [
+          [
+            {
+              html: paymentLabel
+            },
+            {
+              text: "£150",
+              format: "numeric"
+            }
+          ]
+        ]
+      }) }}
+
+      <h3 class="govuk-heading-m">The total amount to pay is &pound;150</h3>
+
+      {{ govukButton({
+        text: "Continue",
+        href: payLink
+      }) }}
+    </div>
+  </div>
+
+{% endblock %}

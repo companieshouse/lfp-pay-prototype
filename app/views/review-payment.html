@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Reviw and pay your penalty
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds review-details">
+      <h1 class="govuk-heading-xl">Review your payment</h1>
+
+      {% set billingAddress %}
+      {{ payment.buildingStreet }},
+      {{ payment.buildingAndStreet }},
+      {{ payment.townOrCity }},
+      {{ payment.postCode }}
+      {% endset %}
+
+      {% set paymentItem %}
+      Late filing penalty &ndash;
+      {{ scenario.entryRef }}<br/>
+      {{ scenario.company.name }}
+      ({{ scenario.company.number }})
+      {% endset %}
+
+      {{ govukTable({
+			  firstCellIsHeader: true,
+			  rows: [
+			    [
+			      {
+			        text: "Card number:"
+			      },
+			      {
+			        text: "**** **** **** " + payment.cardNumber | reverse | truncate(4, false, '')
+			      }
+			    ],
+					[
+			      {
+			        text: "Expiry date:"
+			      },
+			      {
+			        text: payment.expiryMonth + " / " + payment.expiryYear
+			      }
+			    ],
+					[
+			      {
+			        text: "Name on card:"
+			      },
+			      {
+			        text: payment.fullName
+			      }
+			    ],
+					[
+			      {
+			        text: "Billing address:"
+			      },
+			      {
+			        html: billingAddress
+			      }
+			    ],
+					[
+			      {
+			        text: "Confirmation email:"
+			      },
+			      {
+			        text: payment.emailAddress
+			      }
+			    ]
+			  ]
+			}) }}
+      <div class="govuk-form-group">
+        {{ govukButton({
+					text: "Continue",
+					href: "payment-confirmation"
+				}) }}
+      </div>
+      <div class="back">
+        <a href="view-penalties" class="govuk-link govuk-!-font-size-19">Cancel payment</a>
+      </div>
+    </div>
+    <div class="govuk-grid-column-one-third payment-summary-wrap">
+      <aside class="payment-summary">
+        <h2 class="govuk-heading-m">Payment summary</h2>
+        <p id="payment-description" class="govuk-body govuk-!-font-weight-bold">
+          {{ paymentItem | safe }}
+        </p>
+        <p class="govuk-body govuk-!-margin-bottom-0">
+          Total amount:
+          <span id="amount" class="amount govuk-!-font-size-36 govuk-!-font-weight-bold" data-amount="150.00">£{{ totalDue }}</span>
+        </p>
+      </aside>
+    </div>
+  </div>
+{% endblock %}
