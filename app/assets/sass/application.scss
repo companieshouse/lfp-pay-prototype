@@ -13,114 +13,16 @@ $govuk-global-styles: true;
 // Components that aren't in Frontend
 @import "components/cookie-banner";
 
-.accepted-cards {
-  display: block;
-  width: 100%;
-  margin: 15px 0;
-  padding: 0;
-  float: none;
-  overflow: hidden;
-}
-@media (min-width: 40.0625em) {
-  .accepted-cards {
-    width: 66.666%;
+@include govuk-media-query($media-type: print) {
+  .govuk-panel {
+    border: 0.5em solid govuk-colour("turquoise");
   }
-}
-
-.accepted-cards li {
-  display: block;
-  width: 3rem;
-  height: 0;
-  margin: 0 5px 5px;
-  padding-bottom: 2rem;
-  float: left;
-  background-image: url('/public/images/accepted-cards-sprite.png');
-  background-size: 900% 200%;
-}
-
-.accepted-cards .visa {
-  background-position: 0 100%;
-}
-
-.accepted-cards .visa.selected,
-.accepted-cards.field-empty .visa {
-  background-position: 0 0;
-}
-
-.accepted-cards .master-card {
-  background-position: 12.5% 100%;
-}
-
-.accepted-cards .master-card.selected,
-.accepted-cards.field-empty .master-card {
-  background-position: 12.5% 0;
-}
-
-.accepted-cards .american-express {
-  background-position: 25% 100%;
-}
-
-.accepted-cards .american-express.selected,
-.accepted-cards.field-empty .american-express {
-  background-position: 25% 0;
-}
-
-.accepted-cards .jcb {
-  background-position: 37.5% 100%;
-}
-
-.accepted-cards .jcb.selected,
-.accepted-cards.field-empty .jcb {
-  background-position: 37.5% 0;
-}
-
-.accepted-cards .diners-club {
-  background-position: 50% 100%;
-}
-
-.accepted-cards .diners-club.selected,
-.accepted-cards.field-empty .diners-club {
-  background-position: 50% 0;
-}
-
-.accepted-cards .discover {
-  background-position: 62.5% 100%;
-}
-
-.accepted-cards .discover.selected,
-.accepted-cards.field-empty .discover {
-  background-position: 62.5% 0;
-}
-
-.accepted-cards .maestro {
-  background-position: 75% 100%;
-}
-
-.accepted-cards .maestro.selected,
-.accepted-cards.field-empty .maestro {
-  background-position: 75% 0;
-}
-
-.accepted-cards .visa-electron {
-  background-position: 87.5% 100%;
-}
-
-.accepted-cards .visa-electron.selected,
-.accepted-cards.field-empty .visa-electron {
-  background-position: 87.5% 0;
-}
-
-.accepted-cards .unionpay {
-  background-position: 100% 100%;
-}
-
-.accepted-cards .unionpay.selected,
-.accepted-cards.field-empty .unionpay {
-  background-position: 100% 0;
-}
-
-.accepted-cards-hint {
-  color: #6f777b;
+  .govuk-panel__title {
+    color: govuk-colour("black");
+  }
+  .govuk-panel__body {
+    color: govuk-colour("black");
+  }
 }
 
 .cvc-image {
@@ -136,10 +38,10 @@ $govuk-global-styles: true;
 }
 
 .cvc::after {
-  background-image: url('/public/images/card-security-code-2.png');
+  background-image: url("/public/images/card-security-code-2.png");
   background-repeat: no-repeat;
   background-size: cover;
-  content: '';
+  content: "";
   display: block;
   height: 38px;
   left: 15ex;
@@ -161,7 +63,7 @@ $govuk-global-styles: true;
 
 .expiry-separator::after {
   @include govuk-font(24);
-  content: '/';
+  content: "/";
   position: absolute;
   top: 71%;
   right: -1.5rem;
