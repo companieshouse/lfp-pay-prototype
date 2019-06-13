@@ -18,7 +18,7 @@
     <div class="govuk-grid-column-two-thirds">
       {{ govukPanel({
         titleText: "Payment received",
-        html: "Your reference number<br><strong>" + scenario.entryRef + "</strong>"
+        html: "Your reference number is<br /><strong>" + scenario.entryRef + "</strong>"
       }) }}
       <p class="govuk-body-l">
         We've sent a confirmation email containing this reference number to
@@ -39,6 +39,11 @@
           Any debt recovery or legal activity will now stop.
         {% endif %}
         Future correspondence for this penalty should be ignored.
+      </p>
+      <h2 class="govuk-heading-m">Email reminders</h2>
+      <p class="govuk-body">
+        Companies can now choose to
+        <a href="https://www.gov.uk/government/news/email-reminders-help-companies-file-on-time" class="govuk-link">receive filing reminders by email</a>. Companies who have switched to email reminders are more likely to file on time and avoid a penalty.
       </p>
       <p class="govuk-body">
         <a class="govuk-link" href="https://www.gov.uk/service-manual/user-centred-design/resources/patterns/feedback-pages.html">What did you think of this service?</a>
