@@ -340,7 +340,7 @@ router.post('/enter-details', function (req, res) {
       }
 
       req.session.scenario = scenario
-      res.redirect('/view-penalties')
+      res.redirect('/penalty-with-fees')
     }
   }
 })
@@ -655,6 +655,14 @@ router.get('/no-company-found', function (req, res) {
   var scenario = req.session.scenario
 
   res.render('no-company-found', {
+    scenario: scenario
+  })
+})
+
+router.get('/penalty-with-fees', function (req, res) {
+  var scenario = req.session.scenario
+
+  res.render('penalty-with-fees', {
     scenario: scenario
   })
 })
