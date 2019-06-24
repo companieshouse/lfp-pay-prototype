@@ -1,8 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  Late filing penalties for
-  {{scenario.company.name}}
+  No company found
 {% endblock %}
 
 {% block beforeContent %}
@@ -22,13 +21,13 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">
-        Late filing penalty for
-        {{ scenario.company.name }}
+        No penalty found
       </h1>
-      <p class="govuk-body-l">
-        The penalty with a reference of
+      <p class="govuk-body">
+        We couldn't find a penalty with a company number of
+        <span class="govuk-!-font-weight-bold">{{ scenario.company.number }}</span>
+        and a reference of
         <span class="govuk-!-font-weight-bold">{{ scenario.entryRef }}</span>
-        has been paid. No further action is required.
       </p>
     </div>
   </div>
