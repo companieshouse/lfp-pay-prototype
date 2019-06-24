@@ -64,8 +64,8 @@ router.post('/enter-details', function (req, res) {
     penalty !== '00012349' && // SINGLE PENALTY WITH FEES
     penalty !== '00012350' && // PENALTY WITH AN INSTALMENT PLAN
     penalty !== '00012351' && // PART-PAID PENALTY
-    penalty !== '00012352' && // VALID COMPANY WITH NO PENALTY
-    penalty !== '00012353' // VALID COMPANY WITH NO PENALTY
+    penalty !== '00012352' && // NO PENALTY FOUND
+    penalty !== '00012353' // NO COMPANY FOUND
   ) {
     penaltyErr.type = 'invalid'
     penaltyErr.msg = 'Enter your penalty reference exactly as shown on your penalty letter'
@@ -163,7 +163,7 @@ router.post('/enter-details', function (req, res) {
       ]
 
       req.session.scenario = scenario
-      res.redirect('/paying-by-instalments')
+      res.redirect('/online-payment-unavailable')
     } else if (penalty === '00012351') {
       // SINGLE PENALTY THAT HAS BEEN PART_PAID
       scenario.entryRef = penalty
@@ -189,9 +189,9 @@ router.post('/enter-details', function (req, res) {
       ]
 
       req.session.scenario = scenario
-      res.redirect('/part-paid-penalty')
-    } else if (penalty === '00012352') {
-      // VALID COMPANY WITH NO MATCHING PENALTY
+      res.redirect('/online-payment-unavailable')
+    } else if (penalty === '00012352' || penalty === '00012353') {
+      // NO COMPANY OR PENALTY FOUND
       scenario.entryRef = penalty
       scenario.company = {
         name: 'SUNDANCE STAGE PRODUCTION LIMITED',
@@ -200,18 +200,7 @@ router.post('/enter-details', function (req, res) {
       scenario.penalties = []
 
       req.session.scenario = scenario
-      res.redirect('/no-penalty-found')
-    } else if (penalty === '00012353') {
-      // NO MATCHING COMPANY
-      scenario.entryRef = penalty
-      scenario.company = {
-        name: '',
-        number: companyno
-      }
-      scenario.penalties = []
-
-      req.session.scenario = scenario
-      res.redirect('/no-company-found')
+      res.redirect('/not-found')
     } else if (penalty === '00012347' || penalty === '00012348') {
       // MULTIPLE PENALTIES
       scenario.entryRef = penalty
@@ -663,6 +652,22 @@ router.get('/penalty-with-fees', function (req, res) {
   var scenario = req.session.scenario
 
   res.render('penalty-with-fees', {
+    scenario: scenario
+  })
+})
+
+router.get('/not-found', function (req, res) {
+  var scenario = req.session.scenario
+
+  res.render('not-found', {
+    scenario: scenario
+  })
+})
+
+router.get('/online-payment-unavailable', function (req, res) {
+  var scenario = req.session.scenario
+
+  res.render('online-payment-unavailable', {
     scenario: scenario
   })
 })
