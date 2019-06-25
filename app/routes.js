@@ -99,9 +99,9 @@ router.post('/enter-details', function (req, res) {
         {
           pen1: '00012345',
           periodStart: '31 July 2017',
-          periodEnd: '1 August 2018',
-          due: '1 May 2019',
-          filed: '10 May 2019',
+          periodEnd: '1 September 2018',
+          due: '1 June 2019',
+          filed: '10 June 2019',
           overdue: '9 days',
           band: 'Up to 1 month overdue',
           value: 150,
