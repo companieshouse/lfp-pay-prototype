@@ -117,7 +117,7 @@ router.post('/enter-details', function (req, res) {
       // SINGLE PENALTY THAT HAS BEEN PAID
       scenario.entryRef = penalty
       scenario.company = {
-        name: 'WILKINS GLAZING LIMITED',
+        name: 'BATTERSEA POWER LIMITED',
         number: companyno
       }
       scenario.penalties = [
