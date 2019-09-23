@@ -18,6 +18,11 @@ router.get('/start', function (req, res) {
   })
 })
 
+// Service offline
+router.get('/service-offline', function (req, res) {
+  res.render('service-offline')
+})
+
 // Lost your penalty notice
 router.get('/lost-your-penalty-notice', function (req, res) {
   req.session.destroy()
