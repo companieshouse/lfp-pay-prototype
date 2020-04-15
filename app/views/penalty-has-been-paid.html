@@ -26,42 +26,9 @@
         {{ scenario.company.name }}
       </h1>
       <p class="govuk-body-l">
-        {% if scenario.penalties | length > 1 %}
-          There are
-          {{ scenario.penalties | length }}
-          outstanding penalties
-        {% endif %}
-      </p>
-      {{ govukInsetText({
-        text: "This penalty has been paid. No further action is required."
-      }) }}
-      {% for penalty in scenario.penalties %}
-        <h2 class="govuk-heading-m">
-          Accounts period made up to
-          {{ penalty.periodEnd }}
-        </h2>
-        <table class="govuk-table govuk-!-mb-r7">
-          <caption class="govuk-table__caption"></caption>
-          <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header" scope="col">Fee</th>
-              <th class="govuk-table__header" scope="col">Date</th>
-              <th class="govuk-table__header govuk-table__header--numeric" scope="col">Fee Amount</th>
-              <th class="govuk-table__header govuk-table__header--numeric" scope="col">Amount paid</th>
-            </tr>
-          </thead>
-          <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-              <td class="govuk-table__cell">Late filing penalty</td>
-              <td class="govuk-table__cell">{{ penalty.filed }}</td>
-              <td class="govuk-table__cell govuk-table__cell--numeric">£{{ penalty.value }}</td>
-              <td class="govuk-table__cell govuk-table__cell--numeric">£{{ penalty.value }}</td>
-            </tr>
-          </tbody>
-        </table>
-      {% endfor %}
-      <p class="govuk-body govuk-!-font-size-24 govuk-!-font-weight-bold">
-        Total amount due: £0
+        The penalty with a reference of
+        <span class="govuk-!-font-weight-bold">{{ scenario.entryRef }}</span>
+        has been paid. No further action is required.
       </p>
     </div>
   </div>

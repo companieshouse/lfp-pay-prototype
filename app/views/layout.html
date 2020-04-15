@@ -40,7 +40,7 @@
   {{ govukHeader({
     homepageUrl: "/",
     serviceName: serviceName,
-    serviceUrl: serviceUrl,
+    serviceUrl: serviceURL,
     containerClasses: "govuk-width-container"
   }) }}
 {% endblock %}
@@ -50,7 +50,11 @@
     {{ govukFooter({
       meta: {
         items: [
-          {
+        {
+          href: "/accessibility-statement",
+          text: "Accessibility statement"
+        },
+        {
             href: "https://govuk-prototype-kit.herokuapp.com/",
             text: "GOV.UK Prototype Kit " + releaseVersion
           },

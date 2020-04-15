@@ -1,0 +1,126 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Paying a penalty with fees
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "beta"
+    },
+    html: 'This is a trial service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.'
+  }) }}
+  {{ govukBackLink({
+    text: "Back",
+    href: "enter-details"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        Sorry, the service is unavailable
+      </h1>
+      <p class="govuk-body-l">You will be able to use the service from 9am on Monday 19 september 2019.</p>
+      {% set detailsText %}
+      <h2 class="govuk-heading-m">By phone</h2>
+      <p class="govuk-body">
+        You can pay by phone using your credit or debit card.<br/>
+        Telephone: 0303 1234 500<br/>
+        Contact Centre lines are open between 8.30am to 6pm (Monday to Friday).<br/>
+        Paying your penalty through instalments can also be set up by phone.
+      </p>
+      <h2 class="govuk-heading-m">Cheque</h2>
+      <p class="govuk-body">
+        Send your cheque, along with the remittance advice on the bottom of your letter to:
+      </p>
+      <h3 class="govuk-heading-s">England Wales and Northern Ireland</h3>
+      <p class="govuk-body">
+        Companies House<br/>
+        PO Box 710<br/>
+        Crown Way<br/>
+        CF14 3UZ
+      </p>
+      <h3 class="govuk-heading-s">Scotland</h3>
+      <p class="govuk-body">
+        Companies House<br/>
+        Fourth Floor<br/>
+        Edinburgh Quay 2<br/>
+        139 Fountainbridge<br/>
+        Edinburgh<br/>
+        EH3 9FF
+      </p>
+      <h2 class="govuk-heading-m">BACS</h2>
+      <p class="govuk-body">
+        Quote your company number followed by the full company name in your transaction reference so we can allocate your payment properly.
+      </p>
+      {{ govukTable({
+        caption: "BACS payment details",
+        firstCellIsHeader: true,
+        rows: [
+          [
+            {
+              text: "Account name"
+            },
+            {
+              text: "Late Filing Penalties Receipts"
+            }
+          ],
+          [
+            {
+              text: "Account number"
+            },
+            {
+              text: "41005309"
+            }
+          ],
+          [
+            {
+              text: "Bank / Branch"
+            },
+            {
+              html: "National Westminster Bank<br/>
+              Roath, Cardiff"
+            }
+          ],
+          [
+            {
+              text: "Sort code"
+            },
+            {
+              text: "52 21 07"
+            }
+          ],
+          [
+            {
+              text: "Swift code"
+            },
+            {
+              text: "NW BK GB 2122X"
+            }
+          ],
+          [
+            {
+              text: "IBAN (If overseas)"
+            },
+            {
+              text: "GB34NWBK52210741005309"
+            }
+          ]
+        ]
+      }) }}
+      <p class="govuk-body">
+        Email confirmation of your BACS payment to
+        <a class="govuk-link govuk-link--no-visited-state" href="mailto:lfpfinance@companieshouse.gov.uk" title="Email the late filing penalty finance team">lfpfinance@companieshouse.gov.uk</a>. The email must include the amount paid, company number and company name.
+      </p>
+      {% endset %}
+
+      {{ govukDetails({
+        summaryText: "Other ways to pay a penalty",
+        html: detailsText
+      }) }}
+    </div>
+  </div>
+{% endblock %}
