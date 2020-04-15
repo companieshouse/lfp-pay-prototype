@@ -351,6 +351,8 @@ router.all('*', function (req, res, next) {
 router.get('/view-penalties', function (req, res) {
   var scenario = req.session.scenario
   var entryRef = ''
+  var env = (process.env.NODE_ENV || 'development').toLowerCase()
+  var payLink = ''
   var totalDue = 0
 
   if (scenario != null) {
@@ -359,12 +361,27 @@ router.get('/view-penalties', function (req, res) {
     for (var i = 0; i < scenario.penalties.length; i++) {
       totalDue += (scenario.penalties[i].value + scenario.penalties[i].totalFees)
     }
+    // Pay Link
+    if (env === 'development') {
+      if (scenario.entryRef === '00012345') {
+        payLink = process.env.BPL_REDIRECT
+      } else if (scenario.entryRef === '00012347' || scenario.entryRef === '00012348') {
+        payLink = process.env.TML_REDIRECT
+      }
+    } else {
+      if (scenario.entryRef === '00012345') {
+        payLink = process.env.BPL_PAY
+      } else if (scenario.entryRef === '00012347' || scenario.entryRef === '00012348') {
+        payLink = process.env.TML_PAY
+      }
+    }
 
     req.session.totalDue = totalDue
     res.render('view-penalties', {
       scenario: scenario,
       totalDue: totalDue,
-      entryRef: entryRef
+      entryRef: entryRef,
+      payLink: payLink
     })
   } else {
     res.redirect('/start')
