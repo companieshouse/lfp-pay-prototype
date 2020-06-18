@@ -16,6 +16,42 @@ router.get('/start', function (req, res) {
     chAccountURL: chAccountURL,
     serviceURL: serviceURL
   })
+  router.post('/start', function (req, res) {
+    res.redirect('how-to-sign-in')
+  })
+})
+router.get('/how-to-sign-in', function (req, res) {
+  res.render('how-to-sign-in')
+})
+
+router.post('/how-to-sign-in', function (req, res) {
+  req.session.email = req.body.email
+  var how = req.body.how
+
+  switch (how) {
+    case 'yes':
+      res.redirect('/sign-in')
+      break
+    case 'guest':
+      res.redirect('/email-sign-in')
+      break
+  }
+})
+router.get('/sign-in', function (req, res) {
+  res.render('sign-in')
+})
+
+router.post('/sign-in', function (req, res) {
+  req.session.email = req.body.email
+  res.redirect('/enter-details')
+})
+router.get('/email-sign-in', function (req, res) {
+  res.render('email-sign-in')
+})
+
+router.post('/email-sign-in', function (req, res) {
+  req.session.email = req.body.email
+  res.redirect('/enter-details')
 })
 
 // Service offline
