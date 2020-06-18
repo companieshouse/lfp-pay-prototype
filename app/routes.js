@@ -655,7 +655,7 @@ router.get('/review-payment', function (req, res) {
 router.get('/payment-confirmation', function (req, res) {
   var scenario = req.session.scenario
   var totalDue = req.session.totalDue
-  var accountEmail = req.session.accountEmail
+  var email = req.session.email
 
   if (scenario != null) {
     // Send confirmation email
@@ -670,7 +670,7 @@ router.get('/payment-confirmation', function (req, res) {
         'TemplateModel': {
           'scenario': scenario,
           'totalPaid': totalDue,
-          'accountEmail': accountEmail
+          'email': email
         }
       }, function (error, success) {
         if (error) {
