@@ -67,14 +67,14 @@ router.get('/lost-your-penalty-notice', function (req, res) {
 
 // Enter details
 router.get('/login', function (req, res) {
-  req.session.accountEmail = req.query.accountEmail
+  req.session.email = req.query.email
   res.redirect('enter-details')
 })
 
 // Enter details
 router.get('/enter-details', function (req, res) {
   res.render('enter-details', {
-    accountEmail: req.session.accountEmail
+    email: req.session.email
   })
 })
 
@@ -655,7 +655,7 @@ router.get('/review-payment', function (req, res) {
 router.get('/payment-confirmation', function (req, res) {
   var scenario = req.session.scenario
   var totalDue = req.session.totalDue
-  var accountEmail = req.session.accountEmail
+  var email = req.session.email
 
   if (scenario != null) {
     // Send confirmation email
@@ -670,7 +670,7 @@ router.get('/payment-confirmation', function (req, res) {
         'TemplateModel': {
           'scenario': scenario,
           'totalPaid': totalDue,
-          'accountEmail': accountEmail
+          'email': email
         }
       }, function (error, success) {
         if (error) {
@@ -683,7 +683,7 @@ router.get('/payment-confirmation', function (req, res) {
 
     res.render('payment-confirmation', {
       scenario: scenario,
-      accountEmail: accountEmail
+      email: email
     })
   } else {
     res.redirect('/enter-details')
