@@ -67,14 +67,14 @@ router.get('/lost-your-penalty-notice', function (req, res) {
 
 // Enter details
 router.get('/login', function (req, res) {
-  req.session.accountEmail = req.query.accountEmail
+  req.session.email = req.query.email
   res.redirect('enter-details')
 })
 
 // Enter details
 router.get('/enter-details', function (req, res) {
   res.render('enter-details', {
-    accountEmail: req.session.accountEmail
+    email: req.session.email
   })
 })
 
@@ -683,7 +683,7 @@ router.get('/payment-confirmation', function (req, res) {
 
     res.render('payment-confirmation', {
       scenario: scenario,
-      accountEmail: accountEmail
+      email: email
     })
   } else {
     res.redirect('/enter-details')
