@@ -48,7 +48,8 @@
       <form action="{{ chAccountURL }}sign-in" method="POST">
         {{ govukButton({
           text: "Start now",
-          classes: "govuk-button--start"
+          classes: "govuk-button--start",
+          href: "/how-to-sign-in"
         }) }}
         <input type="hidden" name="continueURL" value="{{ serviceURL }}login">
         <input type="hidden" name="backURL" value="{{ serviceURL }}start">
