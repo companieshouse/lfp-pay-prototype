@@ -31,11 +31,6 @@
         {% endif %}
       </h1>
       <p class="govuk-body-l">Use this service to pay a company's late filing penalty.</p>
-      <p class="govuk-body">To use this service, the penalty must:</p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li>have been issued on or after 30 March 2020</li>
-        <li>be a single penalty with no additional fees or costs</li>
-      </ul>
       <p class="govuk-body">You'll need:</p>
       <ul class="govuk-list govuk-list--bullet">
         <li>the company number</li>
@@ -43,41 +38,43 @@
         <li>to sign in to or create a Companies House account, which is different from a WebFiling account</li>
         <li>a credit or debit card</li>
       </ul>
-      <p class="govuk-body">It takes around 5 minutes to pay.</p>
-      <form action="{{ chAccountURL }}sign-in" method="POST">
-        {{ govukButton({
+      <p>You can
+        <a href="">appeal a late filing penalty</a>, but you'll need to show that the reasons for filing late were exceptional.
+        <p class="govuk-body">It takes around 5 minutes to pay.</p>
+        <form action="{{ chAccountURL }}sign-in" method="POST">
+          {{ govukButton({
           text: "Start now",
           classes: "govuk-button--start",
           href: "/how-to-sign-in"
         }) }}
-        <input type="hidden" name="continueURL" value="{{ serviceURL }}login">
-        <input type="hidden" name="backURL" value="{{ serviceURL }}start">
-        <input type="hidden" name="serviceURL" value="{{ serviceURL }}start">
-        <input type="hidden" name="serviceName" value="Pay a late filing penalty">
-      </form>
+          <input type="hidden" name="continueURL" value="{{ serviceURL }}login">
+          <input type="hidden" name="backURL" value="{{ serviceURL }}start">
+          <input type="hidden" name="serviceURL" value="{{ serviceURL }}start">
+          <input type="hidden" name="serviceName" value="Pay a late filing penalty">
+        </form>
 
-      {% set detailsText %}
-      <h2 class="govuk-heading-m">By phone</h2>
-      <p class="govuk-body">
-        You can pay by phone using your credit or debit card.<br/>
-        Telephone: 0303 1234 500<br/>
-        Contact Centre lines are open between 8.30am to 5pm (Monday to Friday).<br/>
-      </p>
-      <h2 class="govuk-heading-m">Cheque</h2>
-      <p class="govuk-body">
-        Send your cheque, along with the remittance advice on the bottom of your letter to:
-      </p>
-      <p class="govuk-body">
-        Companies House<br/>
-        PO Box 710<br/>
-        Crown Way<br/>
-        CF14 3UZ
-      </p>
-      <h2 class="govuk-heading-m">BACS</h2>
-      <p class="govuk-body">
-        Quote your company number followed by the full company name in your transaction reference so we can allocate your payment properly.
-      </p>
-      {{ govukTable({
+        {% set detailsText %}
+        <h2 class="govuk-heading-m">By phone</h2>
+        <p class="govuk-body">
+          You can pay by phone using your credit or debit card.<br/>
+          Telephone: 0303 1234 500<br/>
+          Contact Centre lines are open between 8.30am to 5pm (Monday to Friday).<br/>
+        </p>
+        <h2 class="govuk-heading-m">Cheque</h2>
+        <p class="govuk-body">
+          Send your cheque, along with the remittance advice on the bottom of your letter to:
+        </p>
+        <p class="govuk-body">
+          Companies House<br/>
+          PO Box 710<br/>
+          Crown Way<br/>
+          CF14 3UZ
+        </p>
+        <h2 class="govuk-heading-m">BACS</h2>
+        <p class="govuk-body">
+          Quote your company number followed by the full company name in your transaction reference so we can allocate your payment properly.
+        </p>
+        {{ govukTable({
         caption: "BACS payment details",
         firstCellIsHeader: true,
         rows: [
@@ -94,7 +91,7 @@
               text: "Account number"
             },
             {
-              text: "41005309"
+              text: "10031154"
             }
           ],
           [
@@ -111,7 +108,7 @@
               text: "Sort code"
             },
             {
-              text: "52 21 07"
+              text: "60 70 80"
             }
           ],
           [
@@ -132,43 +129,43 @@
           ]
         ]
       }) }}
-      <p class="govuk-body">
-        Email confirmation of your BACS payment to
-        <a class="govuk-link govuk-link--no-visited-state" href="mailto:lfpfinance@companieshouse.gov.uk" title="Email the late filing penalty finance team">lfpfinance@companieshouse.gov.uk</a>. The email must include the amount paid, company number and company name.
-      </p>
-      {% endset %}
+        <p class="govuk-body">
+          Email confirmation of your BACS payment to
+          <a class="govuk-link govuk-link--no-visited-state" href="mailto:lfpfinance@companieshouse.gov.uk" title="Email the late filing penalty finance team">lfpfinance@companieshouse.gov.uk</a>. The email must include the amount paid, company number and company name.
+        </p>
+        {% endset %}
 
-      {{ govukDetails({
+        {{ govukDetails({
         summaryText: "Other ways to pay a penalty",
         html: detailsText
       }) }}
+      </div>
+      <div class="govuk-grid-column-one-third">
+        <aside class="app-related-items" role="complementary">
+          <h2 class="govuk-heading-m" id="subsection-title">
+            Related content
+          </h2>
+          <nav role="navigation" aria-labelledby="subsection-title">
+            <ul class="govuk-list govuk-body-s">
+              <li>
+                <a href="https://www.gov.uk/file-an-annual-return-with-companies-house">
+                  File your confirmation statement (annual return) with Companies House
+                </a>
+              </li>
+              <li>
+                <a href="https://www.gov.uk/running-a-limited-company">
+                  Running a limited company
+                </a>
+              </li>
+              <li>
+                <a href="https://www.gov.uk/browse/business/limited-company" class="govuk-!-w-bold">
+                  More
+                  <span class="visuallyhidden">Running a limited company</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+      </div>
     </div>
-    <div class="govuk-grid-column-one-third">
-      <aside class="app-related-items" role="complementary">
-        <h2 class="govuk-heading-m" id="subsection-title">
-          Related content
-        </h2>
-        <nav role="navigation" aria-labelledby="subsection-title">
-          <ul class="govuk-list govuk-body-s">
-            <li>
-              <a href="https://www.gov.uk/file-an-annual-return-with-companies-house">
-                File your confirmation statement (annual return) with Companies House
-              </a>
-            </li>
-            <li>
-              <a href="https://www.gov.uk/running-a-limited-company">
-                Running a limited company
-              </a>
-            </li>
-            <li>
-              <a href="https://www.gov.uk/browse/business/limited-company" class="govuk-!-w-bold">
-                More
-                <span class="visuallyhidden">Running a limited company</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </aside>
-    </div>
-  </div>
-{% endblock %}
+  {% endblock %}
