@@ -68,19 +68,6 @@
     }
   ]
 }) }}
-        {% set detailsText %}
-        <p>You:
-          <ul class="govuk--bullet-list">
-            <li>need a Companies House account to file online</li>
-            <li>can follow companies to check what they file</li>
-            <li>can download a company snapshot to see its information at a glance</li>
-          </ul>
-        </p>
-        {% endset %}
-        {{ govukDetails({
-            summaryText: "Read the benefits of using a Companies House account",
-            html: detailsText
-          }) }}
 
         {{ govukButton({
           text: "Continue"
